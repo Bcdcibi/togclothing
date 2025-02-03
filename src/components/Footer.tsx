@@ -7,7 +7,7 @@ import Image from "next/image"; // Import the Image component
 const Footer = () => {
   return (
     <>
-      <footer className="bg-black text-gray-300 py-16 lg:py-24">
+      <footer id="footer"  className="bg-black text-gray-300 py-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8">
           {/* 5-Column Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">

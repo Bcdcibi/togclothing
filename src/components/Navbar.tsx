@@ -47,7 +47,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href='/' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
+              <Link href='#footer' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
                 Contact
               </Link>
             </li>

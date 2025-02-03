@@ -2,6 +2,7 @@
 
 import { Instagram, Youtube, MapPin } from "lucide-react";
 import { SiThreads } from "@icons-pack/react-simple-icons";
+import Image from "next/image"; // Import the Image component
 
 const Footer = () => {
   return (
@@ -12,10 +13,12 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">
             {/* Logo and Description */}
             <div className="lg:col-span-1">
-              <img
+              <Image
                 src="/logo.png"
                 alt="togclothing_logo"
-                className="w-[200px] h-[100px] object-contain mb-6"
+                width={200} // Set width
+                height={100} // Set height
+                className="object-contain mb-6"
               />
               <h3 className="text-xl mb-4 text-gray-400">ALWAYS BEHIND EXCELLENCE</h3>
 
@@ -123,7 +126,7 @@ const Footer = () => {
                   src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3914.9618983022106!2d77.33718487504686!3d11.116215689053945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zM13CsDA2JzU4LjQiTiA3N8KwMjAnMjMuMSJF!5e0!3m2!1sen!2sin!4v1738498840577!5m2!1sen!2sin"
                   className="w-full h-full"
                   style={{ border: 0 }}
-                  allowFullScreen=""
+                  allowFullScreen={true} 
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
@@ -144,10 +147,12 @@ const Footer = () => {
             .
           </p>
           <div className="flex items-center gap-4">
-            <img
+            <Image
               src="/payments.png"
               alt="Payment Methods"
-               className="w-[250px] h-[100px] object-contain opacity-80 grayscale hover:grayscale-0 transition-all duration-300"
+              width={250} // Set width
+              height={100} // Set height
+              className="object-contain opacity-80 grayscale hover:grayscale-0 transition-all duration-300"
             />
           </div>
         </div>

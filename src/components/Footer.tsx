@@ -1,13 +1,15 @@
-"use client";
-
 import { Instagram, Youtube, MapPin } from "lucide-react";
 import { SiThreads } from "@icons-pack/react-simple-icons";
 import Image from "next/image"; // Import the Image component
+import { wixClientServer } from "@/lib/wixClientServer";
+import Link from "next/link";
 
-const Footer = () => {
+const Footer = async () => {
+  const wixClient = await wixClientServer();
+  const cats = await wixClient.collections.queryCollections().find();
   return (
     <>
-      <footer id="footer"  className="bg-black text-gray-300 py-16 lg:py-24">
+      <footer id="contact" className="bg-black text-gray-300 py-16 mt-16 lg:py-24">
         <div className="container mx-auto px-4 lg:px-8">
           {/* 5-Column Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">
@@ -72,31 +74,22 @@ const Footer = () => {
             <div>
               <h3 className="text-white text-xl font-medium mb-6">CATEGORIES</h3>
               <ul className="space-y-4 text-gray-400">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-300">
-                    T-Shirts
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-300">
-                    Shirts
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-300">
-                    Trousers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-300">
-                    Hoodies
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-300">
-                    Jackets
-                  </a>
-                </li>
+                {cats.items.map((item) => {
+                  if (item.slug === 'featured' || item.slug === 'all-products' || item.slug === 'new-arrivals') return;
+
+                  return (
+                    <li key={item._id}
+                      className="shrink-0 w-[85%] mx-5 mt-10">
+                      <Link
+                        href={`/list?cat=${item.slug}`}
+                        className="box">
+                        <h1 className="hover:text-white transition-colors duration-300">
+                          {item.name}
+                        </h1>
+                      </Link>
+                    </li>
+                  )
+                })}
               </ul>
             </div>
 
@@ -122,11 +115,11 @@ const Footer = () => {
             {/* Google Maps Embed (5th column) */}
             <div className="lg:col-span-1 w-full h-full">
               <div className="w-full h-64 rounded-lg overflow-hidden">
-                <iframe 
+                <iframe
                   src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3914.9618983022106!2d77.33718487504686!3d11.116215689053945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zM13CsDA2JzU4LjQiTiA3N8KwMjAnMjMuMSJF!5e0!3m2!1sen!2sin!4v1738498840577!5m2!1sen!2sin"
                   className="w-full h-full"
                   style={{ border: 0 }}
-                  allowFullScreen={true} 
+                  allowFullScreen={true}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />

@@ -32,12 +32,12 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href='/' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
+              <Link href='/#category' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
                 Categories
               </Link>
             </li>
             <li>
-              <Link href='/' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
+              <Link href='/list?cat=all-products' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
                 Shop
               </Link>
             </li>
@@ -47,7 +47,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <Link href='#footer' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
+              <Link href='#contact' className='hover:text-lama text-black text-[15px] font-medium uppercase'>
                 Contact
               </Link>
             </li>

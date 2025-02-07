@@ -23,6 +23,7 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from
 import { useEffect, useState } from "react";
 import { useWixClient } from "@/hooks/useWixClient";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { FaCartShopping } from "react-icons/fa6";
 
 const PRODUCT_PER_PAGE = 8;
 
@@ -137,7 +138,7 @@ const AllProducts = ({ products }: { products: any }) => (
           />
           {product.media?.items && (
             <Image
-              src={product.media?.items[1]?.image?.url || "/product.png"}
+              src={(product.media?.items.length > 1 ? product.media?.items[1]?.image?.url : product.media?.items[0]?.image?.url) || "/product.png"}
               alt=""
               fill
               sizes="25vw"
@@ -171,8 +172,9 @@ const AllProducts = ({ products }: { products: any }) => (
             }}
           ></div>
         )}
-        <button className="w-full bg-lama py-2.5 sm:py-3 px-4 text-sm hover:bg-lama/75 transition-all duration-200 hover:bg-lama text-white">
-          Add to Cart
+        <button className="w-full flex justify-center items-center gap-2 bg-lama py-2.5 sm:py-3 px-4 text-sm hover:bg-lama/75 transition-all duration-200 hover:bg-lama text-white">
+          <p className="text-xl font-bold"><FaCartShopping /></p>
+          <p> Add to Cart</p>
         </button>
       </Link>
     ))}

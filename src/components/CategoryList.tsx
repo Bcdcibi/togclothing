@@ -8,14 +8,14 @@ const CategoryList = async () => {
   const cats = await wixClient.collections.queryCollections().find();
 
   return (
-    <div className="px-8 overflow-x-scroll scrollbar-hide">
+    <div id="category" className="px-8 overflow-x-scroll scrollbar-hide">
       <div className="flex sm:flex-wrap sm:justify-center sm:items-center gap-8">
         {cats.items.map((item) => {
           if (item.slug === 'featured' || item.slug === 'all-products' || item.slug === 'new-arrivals') return;
 
           return (
             <div key={item._id}
-              className="shrink-0 w-[85%] sm:w-1/2 lg:w-1/4 xl:w-1/5 mt-10">
+              className="shrink-0 w-[85%] mx-5 sm:w-[10%] mt-10">
               <Link
                 href={`/list?cat=${item.slug}`}
                 className="box">
@@ -29,7 +29,7 @@ const CategoryList = async () => {
                   />
                 </div>
               </Link>
-              <h1 className="mt-6 text-center font-light text-xl tracking-wide">
+              <h1 className="mt-6 text-center font-light text-sm tracking-wide">
                 {item.name}
               </h1>
             </div>

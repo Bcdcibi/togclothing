@@ -12,7 +12,7 @@ const TermsAndConditions = () => {
           <ul className="list-disc pl-6 space-y-4">
             <li>To access and use our Services, you agree to provide true, accurate, and complete information during registration and ensure responsible account use.</li>
             <li>No warranties or guarantees are provided regarding the accuracy, timeliness, or completeness of website content or Services.</li>
-            <li>Your use of Services is at your own risk and you're responsible for assessing if they meet your needs.</li>
+            <li>Your use of Services is at your own risk, and you&apos;re responsible for assessing if they meet your needs.</li>
             <li>All website content and Services are proprietary - you obtain no rights to our intellectual property.</li>
             <li>Unauthorized use may lead to legal action.</li>
           </ul>
@@ -22,8 +22,8 @@ const TermsAndConditions = () => {
           <h2 className="text-2xl font-semibold">Payments and Refunds</h2>
           <ul className="list-disc pl-6 space-y-4">
             <li>You agree to pay all charges associated with Services.</li>
-            <li>Refunds may be available if we cannot provide the Service, within specified timelines.</li>
-            <li>Failure to claim refunds within stipulated time makes you ineligible.</li>
+            <li>Refunds may be available if we cannot provide the Service within specified timelines.</li>
+            <li>Failure to claim refunds within the stipulated time makes you ineligible.</li>
             <li>Customers must provide accurate bank details - <strong>Togclothing</strong> is not liable for errors in provided details.</li>
           </ul>
         </div>
@@ -44,7 +44,7 @@ const TermsAndConditions = () => {
 
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Force Majeure</h2>
-          <p>We're not liable for failures due to events beyond our reasonable control.</p>
+          <p>We&apos;re not liable for failures due to events beyond our reasonable control.</p>
         </div>
 
         <div className="space-y-6">

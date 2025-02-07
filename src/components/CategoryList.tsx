@@ -8,18 +8,18 @@ const CategoryList = async () => {
   const cats = await wixClient.collections.queryCollections().find();
 
   return (
-    <div id="category" className="px-8 overflow-x-scroll scrollbar-hide">
-      <div className="flex sm:flex-wrap sm:justify-center sm:items-center gap-8">
+    <div id="category" className="px-8">
+      <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-8">
         {cats.items.map((item) => {
           if (item.slug === 'featured' || item.slug === 'all-products' || item.slug === 'new-arrivals') return;
 
           return (
             <div key={item._id}
-              className="shrink-0 w-[85%] mx-5 sm:w-[10%] mt-10">
+              className="w-[45%] sm:w-[10%] mt-5 sm:mt-10">
               <Link
                 href={`/list?cat=${item.slug}`}
                 className="box">
-                <div className="relative bg-slate-100 w-full h-64 hover:scale-105 transition-all duration-300">
+                <div className="relative bg-slate-100 w-full h-32 sm:h-64 hover:scale-105 transition-all duration-300">
                   <Image
                     src={item.media?.mainMedia?.image?.url || "category.png"}
                     alt=""

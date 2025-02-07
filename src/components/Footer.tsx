@@ -9,12 +9,12 @@ const Footer = async () => {
   const cats = await wixClient.collections.queryCollections().find();
   return (
     <>
-      <footer id="contact" className="bg-black text-gray-300 py-16 mt-16 lg:py-24">
+      <footer id="contact" className="bg-black text-gray-300 py-16 mt-16">
         <div className="container mx-auto px-4 lg:px-8">
           {/* 5-Column Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Logo and Description */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 flex flex-col justify-center items-center">
               <Image
                 src="/logo.png"
                 alt="togclothing_logo"
@@ -22,7 +22,7 @@ const Footer = async () => {
                 height={100} // Set height
                 className="object-contain mb-6"
               />
-              <h3 className="text-xl mb-4 text-gray-400">ALWAYS BEHIND EXCELLENCE</h3>
+              <h3 className="text-xl mb-4 text-gray-400 text-center">ALWAYS BEHIND EXCELLENCE</h3>
 
               <div className="flex gap-6 mb-4">
                 <a href="https://www.instagram.com/to_g_mob?igsh=NG9hamRpam1lcm1r&utm_source=qr" className="hover:text-white transition-colors duration-300">
@@ -79,7 +79,7 @@ const Footer = async () => {
 
                   return (
                     <li key={item._id}
-                      className="shrink-0 w-[85%] mx-5 mt-10">
+                      className="shrink-0 w-[85%]">
                       <Link
                         href={`/list?cat=${item.slug}`}
                         className="box">
@@ -98,31 +98,30 @@ const Footer = async () => {
               <h3 className="text-white text-xl font-medium mb-6">CONTACT</h3>
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-white text-lg mb-2">Address</h4>
-                  <p className="text-base group relative flex items-start gap-2 text-gray-400">
+                  <h4 className="text-white/90 text-lg mb-2">Address</h4>
+                  <p className="text-sm group relative flex items-start gap-2 text-gray-400">
                     <MapPin className="mt-1 flex-shrink-0 text-gray-400" size={20} />
-                    To g clothing, 1st street, Lashme nagar, Pn road, Tiruppur - 641602
+                    To G clothing, 1st street, Lashme nagar, Pn road, Tiruppur - 641602
                   </p>
+                  {/* Google Maps Embed (5th column) */}
+                  <div className="w-full mt-4 h-full">
+                    <div className="w-full h-24 rounded-lg overflow-hidden">
+                      <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3914.9618983022106!2d77.33718487504686!3d11.116215689053945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zM13CsDA2JzU4LjQiTiA3N8KwMjAnMjMuMSJF!5e0!3m2!1sen!2sin!4v1738498840577!5m2!1sen!2sin"
+                        className="w-full h-full"
+                        style={{ border: 0 }}
+                        allowFullScreen={true}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <h4 className="text-white text-lg mb-2">Contact Details</h4>
+                  <h4 className="text-white/90 text-lg mb-2">Contact Details</h4>
                   <p className="text-base mb-2 text-gray-400">+91 - 908056057</p>
                   <p className="text-base mb-4 text-gray-400">Thetopgclothing@gmail.com</p>
                 </div>
-              </div>
-            </div>
-
-            {/* Google Maps Embed (5th column) */}
-            <div className="lg:col-span-1 w-full h-full">
-              <div className="w-full h-64 rounded-lg overflow-hidden">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3914.9618983022106!2d77.33718487504686!3d11.116215689053945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zM13CsDA2JzU4LjQiTiA3N8KwMjAnMjMuMSJF!5e0!3m2!1sen!2sin!4v1738498840577!5m2!1sen!2sin"
-                  className="w-full h-full"
-                  style={{ border: 0 }}
-                  allowFullScreen={true}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
               </div>
             </div>
           </div>
@@ -130,7 +129,7 @@ const Footer = async () => {
       </footer>
 
       {/* Bottom Bar */}
-      <div className="bg-black border-t border-gray-800">
+      <div className="bg-gray-800 border-t border-gray-800 p-4">
         <div className="container mx-auto px-4 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-base text-center md:text-left mb-4 md:mb-0">
             © 2025 | The Togclothing. Powered by {" "}

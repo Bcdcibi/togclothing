@@ -1,12 +1,13 @@
 import Add from "@/components/Add";
 import CustomizeProducts from "@/components/CustomizeProducts";
 import ProductImages from "@/components/ProductImages";
-import Reviews from "@/components/Reviews";
 import { wixClientServer } from "@/lib/wixClientServer";
 import DOMPurify from "isomorphic-dompurify";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Accordion from "@/components/Accordion";
+import Skeleton from "@/components/Skeleton";
+import ProductList from "@/components/ProductList";
 
 const SinglePage = async ({ params }: { params: { slug: string } }) => {
   const wixClient = await wixClientServer();
@@ -23,6 +24,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
   const product = products.items[0];
 
   return (
+    <div>
     <div className="px-4 mt-12 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-16">
       {/* IMG */}
       <div className="w-full lg:w-1/2 lg:sticky top-20 h-max">
@@ -82,6 +84,17 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
         <Suspense fallback="Loading...">
           <Reviews productId={product._id!} />
         </Suspense> */}
+      </div>
+    </div>
+    <div className="mt-28 px-4 md:px-12 xl:px-16 2xl:px-32">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-black/80 ml-8">You may also like these!</h1>
+        <Suspense fallback={<Skeleton />}>
+          <ProductList
+            name="Featured Products"
+            categoryId={process.env.FEATURED_PRODUCTS_FEATURED_CATEGORY_ID!}
+            limit={4}
+          />
+        </Suspense>
       </div>
     </div>
   );

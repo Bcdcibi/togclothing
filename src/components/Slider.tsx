@@ -9,7 +9,7 @@ const slides = [
     id: 3,
     title: "Spring Sale Collections",
     description: "Sale! Up to 50% off!",
-    img: "https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "/banners/purple1.png",
     url: "/",
     bg: "bg-gradient-to-r from-blue-50 to-yellow-50",
   },
@@ -17,7 +17,7 @@ const slides = [
     id: 2,
     title: "Winter Sale Collections",
     description: "Sale! Up to 50% off!",
-    img: "https://images.pexels.com/photos/7026424/pexels-photo-7026424.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "/banners/purple2.png",
     url: "/",
     bg: "bg-gradient-to-r from-pink-50 to-blue-50",
   },
@@ -25,7 +25,7 @@ const slides = [
     id: 1,
     title: "Summer Sale Collections",
     description: "Sale! Up to 50% off!",
-    img: "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800",
+    img: "/banners/blue1.png",
     url: "/",
     bg: "bg-gradient-to-r from-yellow-50 to-pink-50",
   },
@@ -53,8 +53,7 @@ const Slider = () => {
             className={`${slide.bg} w-screen h-full flex flex-col gap-16 xl:flex-row`}
             key={slide.id}
           >
-            {/* TEXT CONTAINER */}
-            <div className="h-1/2 xl:w-1/2 xl:h-full flex flex-col items-center justify-center gap-8 2xl:gap-12 text-center">
+            {/* <div className="h-1/2 xl:w-1/2 xl:h-full flex flex-col items-center justify-center gap-8 2xl:gap-12 text-center">
               <h2 className="text-xl lg:text-2xl 2xl:text-3xl">
                 {slide.description}
               </h2>
@@ -66,9 +65,8 @@ const Slider = () => {
                   SHOP NOW
                 </button>
               </Link>
-            </div>
-            {/* IMAGE CONTAINER */}
-            <div className="h-1/2 xl:w-1/2 xl:h-full relative">
+            </div> */}
+            <div className="h-1/2 w-full xl:h-full relative">
               <Image
                 src={slide.img}
                 alt=""
@@ -83,9 +81,8 @@ const Slider = () => {
       <div className="absolute m-auto left-1/2 bottom-8 flex gap-4">
         {slides.map((slide, index) => (
           <div
-            className={`w-3 h-3  rounded-full ring-1 ring-gray-600 cursor-pointer flex items-center justify-center ${
-              current === index ? "scale-150" : ""
-            }`}
+            className={`w-3 h-3  rounded-full ring-1 ring-gray-600 cursor-pointer flex items-center justify-center ${current === index ? "scale-150" : ""
+              }`}
             key={slide.id}
             onClick={() => setCurrent(index)}
           >

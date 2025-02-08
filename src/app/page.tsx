@@ -1,6 +1,7 @@
 // "use client";
 
 import CategoryList from "@/components/CategoryList";
+import HomeCards from "@/components/HomeCards";
 import ProductList from "@/components/ProductList";
 import Skeleton from "@/components/Skeleton";
 import Slider from "@/components/Slider";
@@ -62,6 +63,7 @@ const HomePage = async () => {
           />
         </Suspense>
       </div>
+      <HomeCards />
     </div>
   );
 };

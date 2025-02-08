@@ -39,9 +39,9 @@ const Footer = async () => {
             </div>
 
             {/* Information */}
-            <div>
+            <div className="flex sm:block flex-col justify-center items-center">
               <h3 className="text-white text-xl font-medium mb-6">INFORMATION</h3>
-              <ul className="space-y-4 text-gray-400">
+              <ul className="space-y-4 text-gray-400 flex sm:block flex-col justify-center items-center">
                 <li>
                   <a href="#" className="hover:text-white transition-colors duration-300">
                     About Us
@@ -71,19 +71,19 @@ const Footer = async () => {
             </div>
 
             {/* Categories */}
-            <div>
+            <div className="flex sm:block flex-col justify-center items-center">
               <h3 className="text-white text-xl font-medium mb-6">CATEGORIES</h3>
-              <ul className="space-y-4 text-gray-400">
+              <ul className="space-y-4 text-gray-400 flex sm:block flex-col justify-center items-center">
                 {cats.items.map((item) => {
                   if (item.slug === 'featured' || item.slug === 'all-products' || item.slug === 'new-arrivals') return;
 
                   return (
                     <li key={item._id}
-                      className="shrink-0 w-[85%]">
+                      className="shrink-0 sm:w-[85%]">
                       <Link
                         href={`/list?cat=${item.slug}`}
                         className="box">
-                        <h1 className="hover:text-white transition-colors duration-300">
+                        <h1 className="hover:text-white text-center sm:text-left transition-colors duration-300">
                           {item.name}
                         </h1>
                       </Link>
@@ -94,11 +94,11 @@ const Footer = async () => {
             </div>
 
             {/* Contact Details */}
-            <div>
+            <div className="flex sm:block flex-col justify-center items-center">
               <h3 className="text-white text-xl font-medium mb-6">CONTACT</h3>
-              <div className="space-y-4">
+              <div className="space-y-4 flex sm:block flex-col justify-center items-center">
                 <div>
-                  <h4 className="text-white/90 text-lg mb-2">Address</h4>
+                  <h4 className="text-white/90 sm:text-left text-center text-lg mb-2">Address</h4>
                   <p className="text-sm group relative flex items-start gap-2 text-gray-400">
                     <MapPin className="mt-1 flex-shrink-0 text-gray-400" size={20} />
                     To G clothing, 1st street, Lashme nagar, Pn road, Tiruppur - 641602
@@ -117,7 +117,7 @@ const Footer = async () => {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className="flex sm:block flex-col justify-center items-center">
                   <h4 className="text-white/90 text-lg mb-2">Contact Details</h4>
                   <p className="text-base mb-2 text-gray-400">+91 - 908056057</p>
                   <p className="text-base mb-4 text-gray-400">Thetopgclothing@gmail.com</p>

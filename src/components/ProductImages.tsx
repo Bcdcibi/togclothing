@@ -33,7 +33,7 @@ const ProductImages = ({ items }: { items: any }) => {
           alt=""
           fill
           sizes="50vw"
-          className="object-cover rounded-md"
+          className="object-cover object-top rounded-md"
         />
       </div>
       <div className="flex justify-center items-center gap-6 mt-4">
@@ -48,7 +48,7 @@ const ProductImages = ({ items }: { items: any }) => {
               alt=""
               fill
               sizes="30vw"
-              className="object-cover rounded-md"
+              className="object-cover object-top rounded-md"
             />
           </div>
         ))}

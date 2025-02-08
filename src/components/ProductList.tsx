@@ -23,7 +23,8 @@ import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from
 import { useEffect, useState } from "react";
 import { useWixClient } from "@/hooks/useWixClient";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { FaCartShopping } from "react-icons/fa6";
+// import { FaCartShopping } from "react-icons/fa6";
+import { PiHandbagSimpleLight } from "react-icons/pi";
 
 const PRODUCT_PER_PAGE = 8;
 
@@ -100,6 +101,7 @@ const ProductList = async ({
       const res = await productQuery.find();
       setFilters(extractUniqueAttributes(res.items));
       setProducts(res.items);
+      console.log(res.items)
     };
 
     fetchProducts();
@@ -110,7 +112,7 @@ const ProductList = async ({
       {searchParams?.cat ? (
         <ProductsWithFilters name={name} filters={filters} products={products} />
       ) : (
-        <div className="mt-12 flex gap-x-4 md:gap-x-8 gap-y-16 justify-center items-center flex-wrap">
+        <div className="mt-8 sm:mt-12 flex gap-x-2 md:gap-x-8 gap-y-2 justify-center sm:items-center flex-wrap">
           <AllProducts products={products} />
         </div>
       )}
@@ -125,16 +127,21 @@ const AllProducts = ({ products }: { products: any }) => (
     {products.map((product: products.Product) => (
       <Link
         href={"/" + product.slug}
-        className="flex flex-col shadow-xl bg-white/90 w-[46%] lg:w-[22%]"
+        className="flex flex-col relative sm:shadow-xl sm:bg-white/90 w-[48%] lg:w-[22%]"
         key={product._id}
       >
-        <div className="relative w-full h-40 md:h-48 lg:h-64">
+        {product.price?.price !== product.price?.discountedPrice && (
+          <span className="absolute z-[999] top-0 h-fit py-0.5 px-2 font-bold bg-lama/90 text-white/90 text-sm">
+            -{product.discount?.value}%
+          </span>
+        )}
+        <div className="relative w-full h-44 md:h-48 lg:h-64">
           <Image
             src={product.media?.mainMedia?.image?.url || "/product.png"}
             alt=""
             fill
             sizes="25vw"
-            className="absolute object-cover z-10 hover:opacity-0 transition-opacity ease-in duration-300"
+            className="absolute object-cover z-10 hover:opacity-0 transition-opacity ease-in duration-300 object-top"
           />
           {product.media?.items && (
             <Image
@@ -142,24 +149,30 @@ const AllProducts = ({ products }: { products: any }) => (
               alt=""
               fill
               sizes="25vw"
-              className="absolute object-cover"
+              className="absolute object-cover object-top"
             />
           )}
         </div>
-        <div className="flex flex-col py-2 sm:py-3 gap-0.5 sm:gap-1 justify-center items-center">
-          <p className="font-medium sm:text-lg text-center text-[#3b3b3b]/90">{product.name}</p>
+        <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
+          <div className="flex justify-between items-center">
+            <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
+            <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
+          </div>
+
           {product.price?.price === product.price?.discountedPrice ? (
-            <h2 className="font-semibold sm:text-lg">INR {product.price?.price}</h2>
+            <h2>INR {product.price?.price}</h2>
           ) : (
             <div className="flex items-center gap-2">
-              <h2 className="font-semibold sm:text-lg">
+              <h2 className="sm:text-base text-sm">
                 INR {product.price?.discountedPrice}
               </h2>
-              <h3 className="text-sm sm:text-md text-gray-500 line-through">
+              <h3 className="text-xs text-gray-500 line-through">
                 INR {product.price?.price}
               </h3>
             </div>
-          )}          </div>
+          )}
+        </div>
+
         {product.additionalInfoSections && (
           <div
             className="text-sm text-gray-500"
@@ -172,10 +185,15 @@ const AllProducts = ({ products }: { products: any }) => (
             }}
           ></div>
         )}
-        <button className="w-full flex justify-center items-center gap-2 bg-lama py-2.5 sm:py-3 px-4 text-sm hover:bg-lama/75 transition-all duration-200 hover:bg-lama text-white">
-          <p className="text-xl font-bold"><FaCartShopping /></p>
-          <p> Add to Cart</p>
-        </button>
+        {product.variants && (
+          <div className="flex pb-2 text-xs sm:text-sm justify-between items-center px-4">
+            {product.variants.map((variant, index) => (
+              <>
+                {variant.choices && <p className="font-extralight" key={index}>{variant.choices['Size']}</p>}
+              </>
+            ))}
+          </div>
+        )}
       </Link>
     ))}
   </>

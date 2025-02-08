@@ -141,7 +141,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="font-[sans-serif] min-h-[120vh] sm:min-h-[75vh]">
+    <div className="min-h-[120vh] sm:min-h-[75vh]">
       <div className="grid lg:grid-cols-2 gap-4 max-lg:gap-12 bg-gradient-to-r from-orange-400/90 to-orange-500/80 px-8 py-12 h-[320px]">
         <div>
           <Link href="/" className="inline-block max-w-[160px]">

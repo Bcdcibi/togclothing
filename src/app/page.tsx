@@ -36,15 +36,15 @@ const HomePage = async () => {
     <div className="">
       <Slider />
       <div className="mt-24">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl text-center font-semibold uppercase px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 mb-12">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl text-center font-semibold px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
           Categories
         </h1>
         <Suspense fallback={<Skeleton />}>
           <CategoryList />
         </Suspense>
       </div>
-      <div className="mt-16 px-4 md:px-12 xl:px-16 2xl:px-32">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center uppercase text-black/80">Featured Products</h1>
+      <div className="mt-16 px-1 md:px-12 xl:px-16 2xl:px-32">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center text-black/80">Featured Products</h1>
         <Suspense fallback={<Skeleton />}>
           <ProductList
             name="Featured Products"
@@ -53,8 +53,8 @@ const HomePage = async () => {
           />
         </Suspense>
       </div>
-      <div className="mt-24 px-4 md:px-8 xl:px-16 2xl:px-32">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center uppercase text-black/80">New Arrivals</h1>
+      <div className="mt-16 px-1 md:px-8 xl:px-16 2xl:px-32">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center text-black/80">New Arrivals</h1>
         <Suspense fallback={<Skeleton />}>
           <ProductList
             name="New Arrivals"
@@ -63,7 +63,6 @@ const HomePage = async () => {
           />
         </Suspense>
       </div>
-      <HomeCards />
     </div>
   );
 };

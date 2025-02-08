@@ -50,8 +50,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
               </h3>
               <span
                 className="inline-block h-fit py-0.5 px-2 font-bold bg-lama/20 text-lama rounded-lg text-sm"
-              >{product.discount?.value}%</span
-              >
+              >{product.discount?.value}%</span>
             </div>
             <p
               className="text-dark-grayish w-fit line-through decoration-dark-grayish decoration-1 my-auto"

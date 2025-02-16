@@ -3,36 +3,38 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-const slides = [
-  {
-    id: 3,
-    title: "Spring Sale Collections",
-    description: "Sale! Up to 50% off!",
-    img: "/banners/purple1.png",
-    url: "/",
-    bg: "bg-gradient-to-r from-blue-50 to-yellow-50",
-  },
-  {
-    id: 2,
-    title: "Winter Sale Collections",
-    description: "Sale! Up to 50% off!",
-    img: "/banners/purple2.png",
-    url: "/",
-    bg: "bg-gradient-to-r from-pink-50 to-blue-50",
-  },
-  {
-    id: 1,
-    title: "Summer Sale Collections",
-    description: "Sale! Up to 50% off!",
-    img: "/banners/blue1.png",
-    url: "/",
-    bg: "bg-gradient-to-r from-yellow-50 to-pink-50",
-  },
-];
+import { useMediaQuery } from "react-responsive";
 
 const Slider = () => {
+  const isMobile = useMediaQuery({ query: '(max-width: 620px)' })
   const [current, setCurrent] = useState(0);
+
+  const slides = [
+    {
+      id: 3,
+      title: "Spring Sale Collections",
+      description: "Sale! Up to 50% off!",
+      img: `${isMobile ? "/banners/mobile_1.jpg" : "/banners/purple1.png"}`,
+      url: "/",
+      bg: "bg-gradient-to-r from-blue-50 to-yellow-50",
+    },
+    {
+      id: 2,
+      title: "Winter Sale Collections",
+      description: "Sale! Up to 50% off!",
+      img: `${isMobile ? "/banners/mobile_2.jpg" : "/banners/purple2.png"}`,
+      url: "/",
+      bg: "bg-gradient-to-r from-pink-50 to-blue-50",
+    },
+    {
+      id: 1,
+      title: "Summer Sale Collections",
+      description: "Sale! Up to 50% off!",
+      img: `${isMobile ? "/banners/mobile_3.jpg" : "/banners/blue1.png"}`,
+      url: "/",
+      bg: "bg-gradient-to-r from-yellow-50 to-pink-50",
+    },
+  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,7 +61,7 @@ const Slider = () => {
                 alt=""
                 fill
                 sizes="100%"
-                className="object-cover"
+                className="object-contain w-full"
               />
             </div>
           </div>

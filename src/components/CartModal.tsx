@@ -137,7 +137,7 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                               <h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">Quantity: {item.quantity}</h6>
                             </div>
                             <div className="flex justify-between items-center">
-                              <h6 className="text-lama/80 font-manrope font-bold text-2xl leading-9 text-right">INR {item.price?.amount}</h6>
+                              <h6 className="text-lama/80 font-manrope font-bold text-2xl leading-9 text-right">₹ {item.price?.amount}</h6>
                             </div>
                           </div>
                         </div>
@@ -145,7 +145,7 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                       <div className="flex flex-row items-center justify-between px-3 pb-3 md:px-6 md:pb-6 border-b border-gray-200">
                         <h5 className="text-gray-900 flex justify-center items-center font-manrope font-semibold text-3xl leading-9 max-md:text-center">Subtotal</h5>
                         <div className="flex flex-row">
-                          <h6 className="font-manrope font-bold text-3xl text-lama">INR {price}</h6>
+                          <h6 className="font-manrope font-bold text-3xl text-lama">₹ {price}</h6>
                         </div>
                       </div>
                       <div className="max-lg:max-w-lg max-lg:mx-auto">

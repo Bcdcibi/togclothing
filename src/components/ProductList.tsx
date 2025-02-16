@@ -160,14 +160,14 @@ const AllProducts = ({ products }: { products: any }) => (
           </div>
 
           {product.price?.price === product.price?.discountedPrice ? (
-            <h2>INR {product.price?.price}</h2>
+            <h2>₹ {product.price?.price}</h2>
           ) : (
             <div className="flex items-center gap-2">
               <h2 className="sm:text-base text-sm">
-                INR {product.price?.discountedPrice}
+                ₹ {product.price?.discountedPrice}
               </h2>
               <h3 className="text-xs text-gray-500 line-through">
-                INR {product.price?.price}
+                ₹ {product.price?.price}
               </h3>
             </div>
           )}

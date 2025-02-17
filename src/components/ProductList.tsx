@@ -127,7 +127,7 @@ const AllProducts = ({ products }: { products: any }) => (
     {products.map((product: products.Product) => (
       <Link
         href={"/" + product.slug}
-        className="flex flex-col relative sm:shadow-xl sm:bg-white/90 w-[48%] lg:w-[22%]"
+        className="flex flex-col relative sm:shadow-md sm:bg-white/90 w-[48%] lg:w-[22%]"
         key={product._id}
       >
         {product.price?.price !== product.price?.discountedPrice && (
@@ -135,7 +135,7 @@ const AllProducts = ({ products }: { products: any }) => (
             -{product.discount?.value}%
           </span>
         )}
-        <div className="relative w-full h-44 md:h-48 lg:h-64">
+        <div className="relative w-full h-64 md:h-52 lg:h-64">
           <Image
             src={product.media?.mainMedia?.image?.url || "/product.png"}
             alt=""

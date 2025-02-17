@@ -3,6 +3,13 @@
 import Image from "next/image";
 import { useState } from "react";
 
+import { Navigation, Scrollbar } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+import 'swiper/css';
 // const images = [
 //   {
 //     id: 1,
@@ -27,16 +34,24 @@ const ProductImages = ({ items }: { items: any }) => {
 
   return (
     <div className="">
-      <div className="h-[500px] relative">
-        <Image
-          src={items[index].image?.url}
-          alt=""
-          fill
-          sizes="50vw"
-          className="object-cover object-top rounded-md"
-        />
-      </div>
-      <div className="flex justify-center items-center gap-6 mt-4">
+      <Swiper className="h-[500px] relative"
+        modules={[Navigation, Scrollbar]}
+        navigation
+        scrollbar={{ draggable: true }}>
+        {items.map((item: any, i: number) => (
+          <SwiperSlide
+            key={i}>
+            <Image
+              src={item.image?.url}
+              alt=""
+              fill
+              sizes="50vw"
+              className="object-cover object-top rounded-md"
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      {/* <div className="flex justify-center items-center gap-6 mt-4">
         {items.map((item: any, i: number) => (
           <div
             className={`w-1/4 h-32 relative gap-4 mt-8 rounded-lg cursor-pointer ${i === index ? "border-2 opacity-75 border-lama" : ""}`}
@@ -52,7 +67,7 @@ const ProductImages = ({ items }: { items: any }) => {
             />
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

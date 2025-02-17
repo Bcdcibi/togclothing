@@ -25,7 +25,7 @@ const ProductImages = ({ items }: { items: any }) => {
               alt=""
               fill
               sizes="50vw"
-              className="object-cover object-top rounded-md"
+              className="object-cover object-top"
             />
           </SwiperSlide>
         ))}

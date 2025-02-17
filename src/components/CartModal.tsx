@@ -133,7 +133,14 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                                 </svg>
                               </button>
                             </div>
-                            <div className="flex sm:mt-4 justify-between items-center">
+                            {(item?.descriptionLines?.length ?? 0) > 0 && (
+                              <div className="flex justify-between items-center">
+                                <h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">
+                                  {item.descriptionLines?.[0]?.name?.original ?? ""}: {item.descriptionLines?.[0]?.plainText?.original ?? ""}
+                                </h6>
+                              </div>
+                            )}
+                            <div className="flex justify-between items-center">
                               <h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">Quantity: {item.quantity}</h6>
                             </div>
                             <div className="flex justify-between items-center">

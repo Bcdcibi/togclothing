@@ -25,15 +25,15 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <div>
-      <div className="px-4 mt-12 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-16">
+      <div className="px-4 mt-12 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-8 sm:gap-16">
         {/* IMG */}
         <div className="w-full lg:w-1/2 lg:sticky top-20 h-max">
           <ProductImages items={product.media?.items} />
         </div>
         {/* TEXTS */}
-        <div className="w-full lg:w-1/2 flex flex-col gap-4">
-          <h1 className="text-4xl font-medium">{product.name}</h1>
-          <p dangerouslySetInnerHTML={{
+        <div className="w-full lg:w-1/2 flex flex-col gap-2 sm:gap-4">
+          <h1 className="text-2xl sm:text-4xl font-medium">{product.name}</h1>
+          <p className='text-sm sm:text-base' dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(product.description || ""),
           }}></p>
           {product.price?.price === product.price?.discountedPrice ? (
@@ -85,7 +85,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
         </Suspense> */}
         </div>
       </div>
-      <div className="mt-28 px-4 md:px-12 xl:px-16 2xl:px-32">
+      <div className="mt-16 sm:mt-28 px-4 md:px-12 xl:px-16 2xl:px-32">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-black/80 ml-8">You may also like these!</h1>
         <Suspense fallback={<Skeleton />}>
           <ProductList

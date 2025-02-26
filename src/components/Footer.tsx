@@ -37,7 +37,7 @@ const Footer = async () => {
                 </div>
                 <div className="flex sm:block flex-col justify-center items-center">
                   <h4 className="text-white/90 text-lg mb-2">Contact Details</h4>
-                  <p className="text-base mb-2 text-gray-400 font-light">+91 - 908056057</p>
+                  <p className="text-base mb-2 text-gray-400 font-light">+91 - 9080560577</p>
                   <p className="text-base mb-4 text-gray-400 font-light">thetopgclothing@gmail.com</p>
                 </div>
               </div>

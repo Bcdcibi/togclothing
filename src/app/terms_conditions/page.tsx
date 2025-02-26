@@ -6,7 +6,6 @@ const TermsAndConditions = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">Terms and Conditions</h1>
       <div className="space-y-8 text-gray-700">
         <p className="text-sm mb-8">Last updated on 07-02-2025 18:06:44</p>
-
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Use of Website and Services</h2>
           <ul className="list-disc pl-6 space-y-4">
@@ -17,7 +16,17 @@ const TermsAndConditions = () => {
             <li>Unauthorized use may lead to legal action.</li>
           </ul>
         </div>
-
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold">Limitations of Liability</h2>
+          <ul className="list-disc pl-6 space-y-4">
+            <li>To the maximum extent permitted by law, <strong>Togclothing</strong> shall not be liable for any direct, indirect, incidental, special, consequential, or exemplary damages.</li>
+            <li>This includes, but is not limited to, damages for loss of profits, goodwill, use, data, or other intangible losses resulting from the use of or inability to use the Service.</li>
+            <li>Our liability is limited to the amount you paid for the specific product or service that gave rise to the claim.</li>
+            <li>We are not liable for any content posted by users or third parties, or for any offensive, inappropriate, obscene, unlawful, or otherwise objectionable content.</li>
+            <li>We are not responsible for any technical problems, failure of communication lines, or any other technical failures related to the use of our website and services.</li>
+            <li>These limitations apply even if <strong>Togclothing</strong> has been advised of the possibility of such damages.</li>
+          </ul>
+        </div>
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Payments and Refunds</h2>
           <ul className="list-disc pl-6 space-y-4">
@@ -27,7 +36,6 @@ const TermsAndConditions = () => {
             <li>Customers must provide accurate bank details - <strong>Togclothing</strong> is not liable for errors in provided details.</li>
           </ul>
         </div>
-
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Prohibited Activities</h2>
           <ul className="list-disc pl-6 space-y-4">
@@ -36,27 +44,22 @@ const TermsAndConditions = () => {
             <li>Initiating a transaction creates a legally binding contract.</li>
           </ul>
         </div>
-
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Delivery Confirmation</h2>
           <p>Report missing packages within <strong>24 hours</strong> of delivery confirmation.</p>
         </div>
-
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Force Majeure</h2>
           <p>We&apos;re not liable for failures due to events beyond our reasonable control.</p>
         </div>
-
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Governing Law</h2>
           <p>Governed by Indian law, with exclusive jurisdiction in Tiruppur, Tamil Nadu courts.</p>
         </div>
-
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Changes to Terms</h2>
           <p>We may modify these Terms at any time without notice.</p>
         </div>
-
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold">Contact Information</h2>
           <p>Reach out using contact details provided on our website for any queries.</p>

@@ -25,6 +25,14 @@ import { useWixClient } from "@/hooks/useWixClient";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 // import { FaCartShopping } from "react-icons/fa6";
 import { PiHandbagSimpleLight } from "react-icons/pi";
+import { useMediaQuery } from "react-responsive";
+import { Navigation, Scrollbar } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+import 'swiper/css';
 
 const PRODUCT_PER_PAGE = 8;
 
@@ -72,6 +80,7 @@ const ProductList = async ({
   const [products, setProducts] = useState<any>([]);
   const [filters, setFilters] = useState<any>([]);
   const wixClient = useWixClient();
+  const isMobile = useMediaQuery({ query: '(max-width: 620px)' })
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -85,12 +94,12 @@ const ProductList = async ({
         )
         .gt("priceData.price", searchParams?.min || 0)
         .lt("priceData.price", searchParams?.max || 999999)
-        .limit(limit || PRODUCT_PER_PAGE)
-        .skip(
-          searchParams?.page
-            ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE)
-            : 0
-        );
+      // .limit(limit || PRODUCT_PER_PAGE)
+      // .skip(
+      //   searchParams?.page
+      //     ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE)
+      //     : 0
+      // );
 
       if (searchParams?.sort) {
         const [sortType, sortBy] = searchParams.sort.split(" ");
@@ -110,10 +119,10 @@ const ProductList = async ({
   return (
     <>
       {searchParams?.cat ? (
-        <ProductsWithFilters name={name} filters={filters} products={products} />
+        <ProductsWithFilters name={name} searchParam={searchParams} isMobile={isMobile} filters={filters} products={products} />
       ) : (
         <div className="mt-8 sm:mt-12 flex gap-x-2 md:gap-x-8 gap-y-2 justify-center sm:items-center flex-wrap">
-          <AllProducts products={products} />
+          <AllProducts products={products} searchParams={searchParams} isMobile={isMobile} />
         </div>
       )}
     </>
@@ -122,84 +131,169 @@ const ProductList = async ({
 
 export default ProductList;
 
-const AllProducts = ({ products }: { products: any }) => (
+const AllProducts = ({ products, searchParams, isMobile }: { products: any, searchParams?: any, isMobile: any }) => (
   <>
-    {products.map((product: products.Product) => (
-      <Link
-        href={"/" + product.slug}
-        className="flex flex-col relative sm:shadow-md sm:bg-white/90 w-[48%] lg:w-[22%]"
-        key={product._id}
-      >
-        {product.price?.price !== product.price?.discountedPrice && (
-          <span className="absolute z-[999] top-0 h-fit py-0.5 px-2 font-bold bg-lama/90 text-white/90 text-sm">
-            -{product.discount?.value}%
-          </span>
-        )}
-        <div className="relative w-full h-64 md:h-52 lg:h-64">
-          <Image
-            src={product.media?.mainMedia?.image?.url || "/product.png"}
-            alt=""
-            fill
-            sizes="25vw"
-            className="absolute object-cover z-10 hover:opacity-0 transition-opacity ease-in duration-300 object-top"
-          />
-          {product.media?.items && (
-            <Image
-              src={(product.media?.items.length > 1 ? product.media?.items[1]?.image?.url : product.media?.items[0]?.image?.url) || "/product.png"}
-              alt=""
-              fill
-              sizes="25vw"
-              className="absolute object-cover object-top"
-            />
-          )}
-        </div>
-        <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
-          <div className="flex justify-between items-center">
-            <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
-            <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
-          </div>
-
-          {product.price?.price === product.price?.discountedPrice ? (
-            <h2>₹ {product.price?.price}</h2>
-          ) : (
-            <div className="flex items-center gap-2">
-              <h2 className="sm:text-base text-sm">
-                ₹ {product.price?.discountedPrice}
-              </h2>
-              <h3 className="text-xs text-gray-500 line-through">
-                ₹ {product.price?.price}
-              </h3>
+    {(searchParams?.cat || isMobile) ? (
+      <>
+        {products.map((product: products.Product) => (
+          <Link
+            href={"/" + product.slug}
+            className="flex flex-col relative sm:shadow-md sm:bg-white/90 w-[48%] lg:w-[22%]"
+            key={product._id}
+          >
+            {product.price?.price !== product.price?.discountedPrice && (
+              <span className="absolute z-[999] top-0 h-fit py-0.5 px-2 font-bold bg-lama/90 text-white/90 text-sm">
+                -{product.discount?.value}%
+              </span>
+            )}
+            <div className="relative w-full h-64 lg:h-64">
+              <Image
+                src={product.media?.mainMedia?.image?.url || "/product.png"}
+                alt=""
+                fill
+                sizes="25vw"
+                className="absolute object-cover z-10 hover:opacity-0 transition-opacity ease-in duration-300 object-top"
+              />
+              {product.media?.items && (
+                <Image
+                  src={(product.media?.items.length > 1 ? product.media?.items[1]?.image?.url : product.media?.items[0]?.image?.url) || "/product.png"}
+                  alt=""
+                  fill
+                  sizes="25vw"
+                  className="absolute object-cover object-top"
+                />
+              )}
             </div>
-          )}
-        </div>
+            <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
+              <div className="flex justify-between items-center">
+                <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
+                <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
+              </div>
 
-        {product.additionalInfoSections && (
-          <div
-            className="text-sm text-gray-500"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(
-                product.additionalInfoSections.find(
-                  (section: any) => section.title === "shortDesc"
-                )?.description || ""
-              ),
-            }}
-          ></div>
-        )}
-        {product.variants && (
-          <div className="flex pb-2 text-xs sm:text-sm justify-between items-center px-4">
-            {product.variants.map((variant, index) => (
-              <>
-                {variant.choices && <p className="font-extralight" key={index}>{variant.choices['Size']}</p>}
-              </>
-            ))}
-          </div>
-        )}
-      </Link>
-    ))}
+              {product.price?.price === product.price?.discountedPrice ? (
+                <h2>₹ {product.price?.price}</h2>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <h2 className="sm:text-base text-sm">
+                    ₹ {product.price?.discountedPrice}
+                  </h2>
+                  <h3 className="text-xs text-gray-500 line-through">
+                    ₹ {product.price?.price}
+                  </h3>
+                </div>
+              )}
+            </div>
+
+            {product.additionalInfoSections && (
+              <div
+                className="text-sm text-gray-500"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(
+                    product.additionalInfoSections.find(
+                      (section: any) => section.title === "shortDesc"
+                    )?.description || ""
+                  ),
+                }}
+              ></div>
+            )}
+            {product.variants && (
+              <div className="flex pb-2 text-xs sm:text-sm justify-start gap-2 items-center px-4">
+                {product.variants.map((variant, index) => (
+                  <>
+                    {variant.choices && <p className="font-extralight" key={index}>{variant.choices['Size']}</p>}
+                  </>
+                ))}
+              </div>
+            )}
+          </Link>
+        ))}
+      </>
+    ) : (
+      <Swiper
+        modules={[Scrollbar]}
+        scrollbar={{ draggable: true }}
+        slidesPerView={4}
+      >
+        {products.map((product: products.Product) => (
+          <SwiperSlide className="w-[48%] lg:w-[22%] px-2">
+            <Link
+              href={"/" + product.slug}
+              className="flex flex-col relative sm:shadow-md sm:bg-white/90"
+              key={product._id}
+            >
+              {product.price?.price !== product.price?.discountedPrice && (
+                <span className="absolute z-[999] top-0 h-fit py-0.5 px-2 font-bold bg-lama/90 text-white/90 text-sm">
+                  -{product.discount?.value}%
+                </span>
+              )}
+              <div className="relative w-full h-64 lg:h-64">
+                <Image
+                  src={product.media?.mainMedia?.image?.url || "/product.png"}
+                  alt=""
+                  fill
+                  sizes="25vw"
+                  className="absolute object-cover z-10 hover:opacity-0 transition-opacity ease-in duration-300 object-top"
+                />
+                {product.media?.items && (
+                  <Image
+                    src={(product.media?.items.length > 1 ? product.media?.items[1]?.image?.url : product.media?.items[0]?.image?.url) || "/product.png"}
+                    alt=""
+                    fill
+                    sizes="25vw"
+                    className="absolute object-cover object-top"
+                  />
+                )}
+              </div>
+              <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
+                <div className="flex justify-between items-center">
+                  <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
+                  <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
+                </div>
+
+                {product.price?.price === product.price?.discountedPrice ? (
+                  <h2>₹ {product.price?.price}</h2>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <h2 className="sm:text-base text-sm">
+                      ₹ {product.price?.discountedPrice}
+                    </h2>
+                    <h3 className="text-xs text-gray-500 line-through">
+                      ₹ {product.price?.price}
+                    </h3>
+                  </div>
+                )}
+              </div>
+
+              {product.additionalInfoSections && (
+                <div
+                  className="text-sm text-gray-500"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(
+                      product.additionalInfoSections.find(
+                        (section: any) => section.title === "shortDesc"
+                      )?.description || ""
+                    ),
+                  }}
+                ></div>
+              )}
+              {product.variants && (
+                <div className="flex pb-2 text-xs sm:text-sm justify-start gap-2 items-center px-4">
+                  {product.variants.map((variant, index) => (
+                    <>
+                      {variant.choices && <p className="font-extralight" key={index}>{variant.choices['Size']}</p>}
+                    </>
+                  ))}
+                </div>
+              )}
+            </Link>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    )}
   </>
 );
 
-const ProductsWithFilters = ({ products, filters, name }: { products: any, filters: any, name: any }) => {
+const ProductsWithFilters = ({ products, filters, name, searchParam, isMobile }: { products: any, filters: any, name: any, searchParam: any, isMobile: any }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   const [selectedFilters, setSelectedFilters] = useState<any>({
@@ -460,7 +554,7 @@ const ProductsWithFilters = ({ products, filters, name }: { products: any, filte
 
               {/* Product grid */}
               <div className="lg:col-span-3 flex gap-x-4 md:gap-x-8 gap-y-16 justify-center items-center flex-wrap">
-                <AllProducts products={filteredProducts} />
+                <AllProducts products={filteredProducts} searchParams={searchParam} isMobile={isMobile} />
               </div>
             </div>
           </section>

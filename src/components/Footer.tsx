@@ -7,7 +7,7 @@ import Image from "next/image"; // Import the Image component
 const Footer = async () => {
   return (
     <>
-      <footer id="contact" className="bg-gray-950/90 text-gray-300 py-16 mt-16">
+      <footer id="contact" className="bg-black/90 text-gray-300 py-16 mt-16">
         <div className="container mx-auto px-4 md:px-24 sm:px-12 lg:px-32">
           {/* 5-Column Grid Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -159,7 +159,7 @@ const Footer = async () => {
       </footer>
 
       {/* Bottom Bar */}
-      <div className="bg-gray-800 border-t border-gray-800 p-4">
+      <div className="bg-black/80 border-t border-gray-900/60 p-4">
         <div className="container mx-auto px-4 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-white text-base text-center md:text-left mb-4 md:mb-0">
             © 2025 | The Togclothing. Powered by {" "}

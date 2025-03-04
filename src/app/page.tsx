@@ -48,8 +48,7 @@ const HomePage = async () => {
         <Suspense fallback={<Skeleton />}>
           <ProductList
             name="Featured Products"
-            categoryId={process.env.FEATURED_PRODUCTS_FEATURED_CATEGORY_ID!}
-            limit={4}
+            categoryId={'00000000-000000-000000-000000000001'}
           />
         </Suspense>
       </div>

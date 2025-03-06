@@ -215,7 +215,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
         slidesPerView={4}
       >
         {products.map((product: products.Product) => (
-          <SwiperSlide className="w-[48%] lg:w-[22%] px-2">
+          <SwiperSlide className="w-[48%] lg:w-[22%] px-2" key={product.slug}>
             <Link
               href={"/" + product.slug}
               className="flex flex-col relative sm:shadow-md sm:bg-white/90"

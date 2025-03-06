@@ -226,7 +226,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                   -{product.discount?.value}%
                 </span>
               )}
-              <div className="relative w-full h-64 lg:h-64">
+              <div className="relative w-full h-64 lg:h-96">
                 <Image
                   src={product.media?.mainMedia?.image?.url || "/product.png"}
                   alt=""

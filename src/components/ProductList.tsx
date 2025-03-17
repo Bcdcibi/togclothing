@@ -110,7 +110,6 @@ const ProductList = async ({
       const res = await productQuery.find();
       setFilters(extractUniqueAttributes(res.items));
       setProducts(res.items);
-      console.log(res.items)
     };
 
     fetchProducts();
@@ -553,7 +552,7 @@ const ProductsWithFilters = ({ products, filters, name, searchParam, isMobile }:
               </form>
 
               {/* Product grid */}
-              <div className="lg:col-span-3 flex gap-x-4 md:gap-x-8 gap-y-16 justify-center items-center flex-wrap">
+              <div className="lg:col-span-3 flex gap-x-2 md:gap-x-8 gap-y-16 justify-center items-center flex-wrap">
                 <AllProducts products={filteredProducts} searchParams={searchParam} isMobile={isMobile} />
               </div>
             </div>

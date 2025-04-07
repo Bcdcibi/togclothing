@@ -82,7 +82,7 @@ const Footer = async () => {
                   </a>
                 </li>
                 <li>
-                  <a href="/Privacy" className="hover:text-white transition-colors duration-300">
+                  <a href="/privacy" className="hover:text-white transition-colors duration-300">
                     Privacy Policy
                   </a>
                 </li>

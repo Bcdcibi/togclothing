@@ -50,10 +50,9 @@ const NavIcons = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     Cookies.remove("refreshToken");
-    const { logoutUrl } = await wixClient.auth.logout(window.location.href);
     setIsLoading(false);
     setIsProfileOpen(false);
-    router.push(logoutUrl);
+    router.push('/');
   };
 
 

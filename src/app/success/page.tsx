@@ -1,3 +1,4 @@
+"use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import Confetti from "react-confetti";
@@ -6,9 +7,9 @@ const SuccessPage = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const orderId: any = searchParams.get("orderId");
 
     useEffect(() => {
+        let orderId = searchParams.get("orderId");
         if (!orderId) return;
 
         const timer = setTimeout(() => {
@@ -18,7 +19,7 @@ const SuccessPage = () => {
         return () => {
             clearTimeout(timer);
         };
-    }, [orderId, router]);
+    }, [router]);
 
     return (
         <div className="flex flex-col gap-6 items-center justify-center h-[calc(100vh-180px)]">

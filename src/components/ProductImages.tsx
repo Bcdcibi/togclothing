@@ -13,7 +13,7 @@ import 'swiper/css';
 const ProductImages = ({ items }: { items: any }) => {
   return (
     <div className="">
-      <Swiper className="h-[450px] sm:h-[650px] relative"
+      <Swiper className="h-[550px] sm:h-[650px] relative"
         modules={[Navigation, Scrollbar]}
         navigation
         scrollbar={{ draggable: true }}>

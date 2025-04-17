@@ -19,22 +19,20 @@ import {
   MenuItems,
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import { useEffect, useState } from "react";
 import { useWixClient } from "@/hooks/useWixClient";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 // import { FaCartShopping } from "react-icons/fa6";
 import { PiHandbagSimpleLight } from "react-icons/pi";
 import { useMediaQuery } from "react-responsive";
-import { Navigation, Scrollbar } from 'swiper/modules';
+import { Scrollbar } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
 import 'swiper/css';
-
-const PRODUCT_PER_PAGE = 8;
 
 function extractUniqueAttributes(products: any) {
   const colors = new Set();
@@ -106,10 +104,10 @@ const ProductList = async ({
         if (sortType === "asc") productQuery.ascending(sortBy);
         if (sortType === "desc") productQuery.descending(sortBy);
       }
-
+      const skipIds = ['laptop-banners', 'mobile-banners']
       const res = await productQuery.find();
       setFilters(extractUniqueAttributes(res.items));
-      setProducts(res.items);
+      setProducts(res.items.filter(item => !skipIds.includes(item.slug || '')));
     };
 
     fetchProducts();

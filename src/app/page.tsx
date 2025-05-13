@@ -44,21 +44,21 @@ const HomePage = async () => {
         </Suspense>
       </div>
       <div className="mt-16 px-1 md:px-12 xl:px-16 2xl:px-32">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center text-black/80">Featured Products</h1>
-        <Suspense fallback={<Skeleton />}>
-          <ProductList
-            name="Featured Products"
-            categoryId={'00000000-000000-000000-000000000001'}
-          />
-        </Suspense>
-      </div>
-      <div className="mt-16 px-1 md:px-8 xl:px-16 2xl:px-32">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center text-black/80">New Arrivals</h1>
         <Suspense fallback={<Skeleton />}>
           <ProductList
             name="New Arrivals"
             categoryId={process.env.FEATURED_PRODUCTS_NEW_CATEGORY_ID!}
             limit={4}
+          />
+        </Suspense>
+      </div>
+      <div className="mt-16 px-1 md:px-8 xl:px-16 2xl:px-32">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center text-black/80">Featured Products</h1>
+        <Suspense fallback={<Skeleton />}>
+          <ProductList
+            name="Featured Products"
+            categoryId={'00000000-000000-000000-000000000001'}
           />
         </Suspense>
       </div>

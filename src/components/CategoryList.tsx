@@ -11,7 +11,7 @@ const CategoryList = async () => {
     <div id="category" className="px-8">
       <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-8">
         {cats.items.map((item) => {
-          if (item.slug === 'featured' || item.slug === 'all-products' || item.slug === 'new-arrivals') return;
+          if (item.slug === 'featured' || item.slug === 'all-products' || item.slug === 'new-arrivals' || item.slug === 'youmaylikethese') return;
 
           return (
             <div key={item._id}

@@ -16,7 +16,6 @@ const Slider = () => {
       const productQuery = await wixClient.products
         .queryProducts().find()
       setProduct(productQuery.items.filter(item => item.slug === (isMobile ? 'mobile-banners' : 'laptop-banners'))[0]);
-      console.log(productQuery.items.filter(item => item.slug === (isMobile ? 'mobile-banners' : 'laptop-banners')))
     }
 
     products();
@@ -38,7 +37,7 @@ const Slider = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrent((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+      setCurrent((prev) => (prev === banners?.length - 1 ? 0 : prev + 1));
     }, 3500);
 
     return () => clearInterval(interval);

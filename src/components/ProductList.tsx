@@ -82,32 +82,37 @@ const ProductList = async ({
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const productQuery = wixClient.products
-        .queryProducts()
-        .startsWith("name", searchParams?.name || "")
-        .eq("collectionIds", categoryId)
-        .hasSome(
-          "productType",
-          searchParams?.type ? [searchParams.type] : ["physical", "digital"]
-        )
-        .gt("priceData.price", searchParams?.min || 0)
-        .lt("priceData.price", searchParams?.max || 999999)
-      // .limit(limit || PRODUCT_PER_PAGE)
-      // .skip(
-      //   searchParams?.page
-      //     ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE)
-      //     : 0
-      // );
+      try {
+        const productQuery = wixClient.products
+          .queryProducts()
+          .startsWith("name", searchParams?.name || "")
+          .eq("collectionIds", categoryId)
+          .hasSome(
+            "productType",
+            searchParams?.type ? [searchParams.type] : ["physical", "digital"]
+          )
+          .gt("priceData.price", searchParams?.min || 0)
+          .lt("priceData.price", searchParams?.max || 999999)
+        // .limit(limit || PRODUCT_PER_PAGE)
+        // .skip(
+        //   searchParams?.page
+        //     ? parseInt(searchParams.page) * (limit || PRODUCT_PER_PAGE)
+        //     : 0
+        // );
 
-      if (searchParams?.sort) {
-        const [sortType, sortBy] = searchParams.sort.split(" ");
-        if (sortType === "asc") productQuery.ascending(sortBy);
-        if (sortType === "desc") productQuery.descending(sortBy);
+        if (searchParams?.sort) {
+          const [sortType, sortBy] = searchParams.sort.split(" ");
+          if (sortType === "asc") productQuery.ascending(sortBy);
+          if (sortType === "desc") productQuery.descending(sortBy);
+        }
+        const skipIds = ['laptop-banners', 'mobile-banners']
+        const res = await productQuery.find();
+        setFilters(extractUniqueAttributes(res.items));
+        setProducts(res.items.filter(item => !skipIds.includes(item.slug || '')));
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setProducts([]); // fallback to empty array
       }
-      const skipIds = ['laptop-banners', 'mobile-banners']
-      const res = await productQuery.find();
-      setFilters(extractUniqueAttributes(res.items));
-      setProducts(res.items.filter(item => !skipIds.includes(item.slug || '')));
     };
 
     fetchProducts();
@@ -135,7 +140,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
         {products.map((product: products.Product) => (
           <Link
             href={"/" + product.slug}
-            className="flex flex-col relative sm:shadow-md sm:bg-white/90 w-[48%] lg:w-[22%]"
+            className="flex flex-col justify-between relative sm:shadow-md sm:bg-white/90 w-full sm:w-60 h-[430px] sm:h-[430px] m-1"
             key={product._id}
           >
             {product.price?.price !== product.price?.discountedPrice && (
@@ -143,7 +148,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 -{product.discount?.value}%
               </span>
             )}
-            <div className="relative w-full h-64 lg:h-64">
+            <div className="relative w-full h-80 lg:h-80">
               <Image
                 src={product.media?.mainMedia?.image?.url || "/product.png"}
                 alt=""
@@ -153,12 +158,22 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
               />
               {product.media?.items && (
                 <Image
-                  src={(product.media?.items.length > 1 ? product.media?.items[1]?.image?.url : product.media?.items[0]?.image?.url) || "/product.png"}
+                  src={
+                    (product.media?.items.length > 1
+                      ? product.media?.items[1]?.image?.url
+                      : product.media?.items[0]?.image?.url) || "/product.png"
+                  }
                   alt=""
                   fill
                   sizes="25vw"
                   className="absolute object-cover object-top"
                 />
+              )}
+              {/* Out of Stock Label */}
+              {(!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1) && (
+                <div className="absolute top-2 left-2 z-20 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded shadow-lg opacity-90">
+                  Out of Stock
+                </div>
               )}
             </div>
             <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
@@ -194,12 +209,35 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
               ></div>
             )}
             {product.variants && (
-              <div className="flex pb-2 text-xs sm:text-sm justify-start gap-2 items-center px-4">
-                {product.variants.map((variant, index) => (
-                  <>
-                    {variant.choices && <p className="font-extralight" key={index}>{variant.choices['Size']}</p>}
-                  </>
-                ))}
+              <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{minHeight: 32}}>
+                {/* Sizes */}
+                <div className="flex gap-2">
+                  {product.variants.map((variant, index) => {
+                    const size = variant.choices?.['Size'];
+                    const outOfStock = !variant.stock?.inStock || (variant.stock?.quantity ?? 0) < 1;
+                    return size ? (
+                      <p
+                        key={index}
+                        className={`font-extralight ${outOfStock ? "line-through text-gray-400" : ""}`}
+                        title={outOfStock ? "Out of stock" : ""}
+                      >
+                        {size}
+                      </p>
+                    ) : null;
+                  })}
+                </div>
+                {/* BUY NOW button at absolute right */}
+                <button
+                  type="button"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-3 bg-yellow-400 hover:bg-yellow-500 text-black text-[10px] sm:text-xs tracking-wider"
+                  style={{ fontWeight: 400, minWidth: "70px", maxHeight: "28px", borderRadius: 0 }}
+                  onClick={e => {
+                    e.preventDefault();
+                    // Add your dropdown/modal logic here
+                  }}
+                >
+                  Buy Now
+                </button>
               </div>
             )}
           </Link>
@@ -212,10 +250,10 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
         slidesPerView={4}
       >
         {products.map((product: products.Product) => (
-          <SwiperSlide className="w-[48%] lg:w-[22%] px-2 pb-4" key={product.slug}>
+          <SwiperSlide className="w-full sm:w-60 h-[430px] sm:h-[430px] m-1" key={product.slug}>
             <Link
               href={"/" + product.slug}
-              className="flex flex-col relative sm:shadow-md sm:bg-white/90"
+              className="flex flex-col justify-between relative sm:shadow-md sm:bg-white/90 w-full h-full"
               key={product._id}
             >
               {product.price?.price !== product.price?.discountedPrice && (
@@ -223,7 +261,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                   -{product.discount?.value}%
                 </span>
               )}
-              <div className="relative w-full h-64 lg:h-96">
+              <div className="relative w-full h-80 lg:h-96">
                 <Image
                   src={product.media?.mainMedia?.image?.url || "/product.png"}
                   alt=""
@@ -233,7 +271,11 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 />
                 {product.media?.items && (
                   <Image
-                    src={(product.media?.items.length > 1 ? product.media?.items[1]?.image?.url : product.media?.items[0]?.image?.url) || "/product.png"}
+                    src={
+                      (product.media?.items.length > 1
+                        ? product.media?.items[1]?.image?.url
+                        : product.media?.items[0]?.image?.url) || "/product.png"
+                    }
                     alt=""
                     fill
                     sizes="25vw"
@@ -274,12 +316,35 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 ></div>
               )}
               {product.variants && (
-                <div className="flex pb-2 text-xs sm:text-sm justify-start gap-2 items-center px-4">
-                  {product.variants.map((variant, index) => (
-                    <>
-                      {variant.choices && <p className="font-extralight" key={index}>{variant.choices['Size']}</p>}
-                    </>
-                  ))}
+                <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{minHeight: 32}}>
+                  {/* Sizes */}
+                  <div className="flex gap-2">
+                    {product.variants.map((variant, index) => {
+                      const size = variant.choices?.['Size'];
+                      const outOfStock = !variant.stock?.inStock || (variant.stock?.quantity ?? 0) < 1;
+                      return size ? (
+                        <p
+                          key={index}
+                          className={`font-extralight ${outOfStock ? "line-through text-gray-400" : ""}`}
+                          title={outOfStock ? "Out of stock" : ""}
+                        >
+                          {size}
+                        </p>
+                      ) : null;
+                    })}
+                  </div>
+                  {/* BUY NOW button at absolute right */}
+                  <button
+                    type="button"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-1 bg-yellow-400 hover:bg-yellow-500 text-black text-[10px] sm:text-xs uppercase tracking-wider"
+                    style={{ fontWeight: 400, minWidth: "70px", maxHeight: "28px", borderRadius: 0 }}
+                    onClick={e => {
+                      e.preventDefault();
+                      // Add your dropdown/modal logic here
+                    }}
+                  >
+                    BUY NOW
+                  </button>
                 </div>
               )}
             </Link>

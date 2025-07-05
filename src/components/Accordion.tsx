@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from 'react'
 
+function stripHtml(html: string) {
+    if (!html) return "";
+    return html.replace(/<[^>]+>/g, "");
+}
+
 export default function Accordion({ title, content }: { title: String, content: String }) {
 
     const [accordionOpen, setAccordionOpen] = useState<boolean>(false)
@@ -34,7 +39,7 @@ export default function Accordion({ title, content }: { title: String, content: 
             >
                 <div className="overflow-hidden">
                     <p className="pb-3">
-                        {content}
+                        {stripHtml(content as string)}
                     </p>
                 </div>
             </div>

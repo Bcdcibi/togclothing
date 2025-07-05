@@ -92,9 +92,9 @@ const Add = ({
             </button>
           </div>
           {stockNumber < 1 ? (
-            <div className="text-xs">Product is <span className="text-red-500">out of stock</span></div>
+            <div className="text-lg">Product is <span className="text-red-500">out of stock</span></div>
           ) : (
-            <div className="text-xs">
+            <div className="text-lg">
               Only <span className="text-orange-500">{stockNumber} items</span>{" "}
               left!
               <br /> {"Don't"} miss it

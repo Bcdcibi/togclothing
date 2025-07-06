@@ -137,66 +137,57 @@ export default ProductList;
 
 const AllProducts = ({ products, searchParams, isMobile }: { products: any, searchParams?: any, isMobile: any }) => {
   const wixClient = useWixClient();
-    const { addItem } = useCartStore();
-  
+  const { addItem, cart } = useCartStore();
+
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
 
   const handleBuyNow = async (product: products.Product, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     try {
       setLoading(product._id!);
-      
+
       // Check if product has variants
       let selectedVariant = null;
       if (product.variants && product.variants.length > 0) {
         // Find the first available variant
-        selectedVariant = product.variants.find(variant => 
+        selectedVariant = product.variants.find(variant =>
           variant.stock?.inStock && (variant.stock?.quantity ?? 0) > 0
         );
-        
+
         if (!selectedVariant) {
           alert('This product is out of stock');
           return;
         }
       }
 
-      addItem(wixClient, product._id!, selectedVariant?._id!, 1);
-      await handleCheckout();
-      
+      await addItem(wixClient, product._id!, selectedVariant?._id!, 1);
+
+      const checkout =
+        await wixClient.currentCart.createCheckoutFromCurrentCart({
+          channelType: currentCart.ChannelType.WEB,
+        });
+
+      const { redirectSession } =
+        await wixClient.redirects.createRedirectSession({
+          ecomCheckout: { checkoutId: checkout.checkoutId },
+          callbacks: {
+            postFlowUrl: window.location.origin,
+            thankYouPageUrl: `${window.location.origin}/success`,
+          },
+        });
+
+      if (redirectSession?.fullUrl) {
+        window.location.href = redirectSession.fullUrl;
+      }
     } catch (error) {
       console.error('Error during buy now:', error);
-      alert('Something went wrong. Please try again.');
     } finally {
       setLoading(null);
     }
   };
-
-    const handleCheckout = async () => {
-      try {
-        const checkout =
-          await wixClient.currentCart.createCheckoutFromCurrentCart({
-            channelType: currentCart.ChannelType.WEB,
-          });
-  
-        const { redirectSession } =
-          await wixClient.redirects.createRedirectSession({
-            ecomCheckout: { checkoutId: checkout.checkoutId },
-            callbacks: {
-              postFlowUrl: window.location.origin,
-              thankYouPageUrl: `${window.location.origin}/success`,
-            },
-          });
-  
-        if (redirectSession?.fullUrl) {
-          window.location.href = redirectSession.fullUrl;
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
 
   return (
     <>
@@ -274,7 +265,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 ></div>
               )}
               {product.variants && (
-                <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{minHeight: 32}}>
+                <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{ minHeight: 32 }}>
                   {/* Sizes */}
                   <div className="flex gap-2">
                     {product.variants.map((variant, index) => {
@@ -379,7 +370,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                   ></div>
                 )}
                 {product.variants && (
-                  <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{minHeight: 32}}>
+                  <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{ minHeight: 32 }}>
                     {/* Sizes */}
                     <div className="flex gap-2">
                       {product.variants.map((variant, index) => {
@@ -401,7 +392,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                       type="button"
                       disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
                       className="absolute right-2 top-3 -translate-y-1/2 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px",}}
+                      style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px", }}
                       onClick={(e) => handleBuyNow(product, e)}
                     >
                       {loading === product._id ? 'Loading...' : 'BUY NOW!'}

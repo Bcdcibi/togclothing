@@ -61,7 +61,8 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
 
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
-          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+          {/* Desktop: slide from right */}
+          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 hidden md:flex">
             <DialogPanel
               transition
               className="pointer-events-auto relative w-screen max-w-md transform animate-slideInRight duration-300 transition data-[closed]:translate-x-full sm:duration-700"
@@ -171,8 +172,121 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
               </div>
             </DialogPanel>
           </div>
-        </div >
-      </div >
+
+          {/* Mobile: slide from bottom */}
+          <div className="pointer-events-none fixed inset-x-0 bottom-0 flex md:hidden z-50">
+            <DialogPanel
+              transition
+              className="pointer-events-auto relative w-screen max-h-[90vh] transform animate-slideInBottom duration-300 transition data-[closed]:translate-x-full sm:duration-700"
+            >
+              <div className="flex flex-col bg-white rounded-t-2xl shadow-2xl overflow-hidden h-full">
+                {/* Top Bar with Close Button */}
+                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                  <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto" />
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="absolute right-4 top-2 rounded-md text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  >
+                    <span className="sr-only">Close panel</span>
+                    <XMarkIcon aria-hidden="true" className="size-6" />
+                  </button>
+                </div>
+
+                {/* Scrollable Cart Section */}
+                <div className="flex-1 overflow-y-auto px-4 pt-4 pb-2">
+                  {(cart.lineItems?.length === 0 || !cart.lineItems) ? (
+                    <div className="flex flex-col justify-center items-center w-full p-6">
+                      <h2 className="title font-manrope font-bold text-3xl mb-3 leading-10 text-center text-black/80">Shopping Cart</h2>
+                      <Image
+                        src={'/empty-cart.png'}
+                        alt="empty-cart"
+                        width={250}
+                        height={250}
+                      />
+                      <h2 className="title font-manrope font-light text-xl leading-10 text-center text-black/80">Cart is empty!</h2>
+                      <Link
+                        onClick={() => setOpen(false)}
+                        href='/list?cat=featured'
+                        className="p-3 mt-3 rounded-md bg-lama text-white hover:bg-lama/80"
+                      >
+                        Shop Now
+                      </Link>
+                    </div>
+                  ) : (
+                    <>
+                      <h2 className="title font-manrope font-bold text-3xl leading-10 mb-6 text-center text-black/80">Shopping Cart</h2>
+                      {cart.lineItems.map((item) => (
+                        <div key={item._id} className="rounded-lg border border-gray-200 p-3 grid grid-cols-12 mb-3 gap-y-4">
+                          <div className="col-span-4">
+                            {item.image && (
+                              <Image
+                                src={wixMedia.getScaledToFillImageUrl(item.image, 100, 100, {})}
+                                alt=""
+                                width={100}
+                                height={100}
+                                className="object-cover rounded-md"
+                              />
+                            )}
+                          </div>
+                          <div className="col-span-8 pl-3">
+                            <div className="flex items-center justify-between gap-2">
+                              <h5 className="font-manrope font-bold text-sm text-gray-900/80">{item.productName?.original}</h5>
+                              <button
+                                style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
+                                onClick={() => removeItem(wixClient, item._id!)}
+                                className="rounded-full group flex items-center justify-center"
+                              >
+                                <svg width="28" height="28" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <circle className="fill-red-50 group-hover:fill-red-400 transition-all duration-500" cx="17" cy="17" r="17" />
+                                  <path
+                                    className="stroke-red-500 group-hover:stroke-white transition-all duration-500"
+                                    d="M14.1673 13.5997V12.5923C14.1673 11.8968 14.7311 11.333 15.4266 11.333H18.5747C19.2702 11.333 19.834 11.8968 19.834 12.5923V13.5997M19.834 13.5997H12.4673V18.8886C12.4673 20.6695 12.4673 21.5599 13.0206 22.1131C13.5738 22.6664 14.4642 22.6664 16.2451 22.6664H17.7562C19.5371 22.6664 20.4275 22.6664 20.9807 22.1131C21.534 21.5599 21.534 20.6695 21.534 18.8886V13.5997Z"
+                                    stroke="#EF4444"
+                                    strokeWidth="1.6"
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                            {(item?.descriptionLines?.length ?? 0) > 0 && (
+                              <p className="text-gray-500 font-light text-xs mt-1 tracking-wider">
+                                  {item.descriptionLines?.[0]?.name?.original ?? ""}: {item.descriptionLines?.[0]?.plainText?.original ?? ""}
+                              </p>
+                            )}
+                            <p className="text-gray-500 font-light text-xs mt-1 tracking-wider">Quantity: {item.quantity}</p>
+                            <p className="text-lama/80 font-manrope font-bold text-lg mt-1">₹ {item.price?.amount}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </div>
+
+                {/* Sticky Checkout Section */}
+                {cart.lineItems?.length != 0 && (
+                  <div className="sticky bottom-0 bg-white border-t border-gray-200 px-4 py-3 shadow-inner">
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="text-gray-900 font-manrope font-semibold text-xl">Subtotal</h5>
+                      <h6 className="font-manrope font-bold text-xl text-lama">₹ {price}</h6>
+                    </div>
+                    <p className="text-xs text-gray-500 text-center mb-2">
+                      Shipping and discounts are calculated at checkout.
+                    </p>
+                    <button
+                      disabled={isLoading}
+                      onClick={handleCheckout}
+                      className="w-full rounded-full py-2 bg-lama text-white font-semibold text-lg hover:bg-lama/80 transition-all duration-300"
+                    >
+                      Checkout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </DialogPanel>
+          </div>
+        </div>
+      </div>
     </Dialog>
   );
 };

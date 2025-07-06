@@ -21,11 +21,16 @@ const config: Config = {
           '0%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-100%)' },
         },
+        slideInBottom: {
+          '0%': { transform: 'translateY(100%)' },
+          '100%': { transform: 'translateY(0)' },
+        }
       },
       animation: {
         slideInLeft: 'slideInLeft 0.5s ease-out',
         slideInRight: 'slideInRight 0.5s ease-out',
         slideOutLeft: 'slideOutLeft 0.5s ease-in',
+        slideInBottom: 'slideInBottom 0.5s ease-in',
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

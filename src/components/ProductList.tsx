@@ -1,6 +1,7 @@
 "use client"
 
 import { products } from "@wix/stores";
+import { currentCart } from "@wix/ecom";
 import Image from "next/image";
 import Link from "next/link";
 import DOMPurify from "isomorphic-dompurify";
@@ -33,6 +34,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
 import 'swiper/css';
+import { useCartStore } from "@/hooks/useCartStore";
 
 function extractUniqueAttributes(products: any) {
   const colors = new Set();
@@ -133,128 +135,77 @@ const ProductList = async ({
 
 export default ProductList;
 
-const AllProducts = ({ products, searchParams, isMobile }: { products: any, searchParams?: any, isMobile: any }) => (
-  <>
-    {(searchParams?.cat || isMobile) ? (
-      <>
-        {products.map((product: products.Product) => (
-          <Link
-            href={"/" + product.slug}
-            className="flex flex-col justify-between relative sm:shadow-md sm:bg-white/90 w-full sm:w-60 h-[430px] sm:h-[430px] m-1"
-            key={product._id}
-          >
-            {product.price?.price !== product.price?.discountedPrice && (
-              <span className="absolute z-[999] top-0 h-fit py-0.5 px-2 font-bold bg-lama/90 text-white/90 text-sm">
-                -{product.discount?.value}%
-              </span>
-            )}
-            <div className="relative w-full h-80 lg:h-80">
-              <Image
-                src={product.media?.mainMedia?.image?.url || "/product.png"}
-                alt=""
-                fill
-                sizes="25vw"
-                className="absolute object-cover z-10 hover:opacity-0 transition-opacity ease-in duration-300 object-top"
-              />
-              {product.media?.items && (
-                <Image
-                  src={
-                    (product.media?.items.length > 1
-                      ? product.media?.items[1]?.image?.url
-                      : product.media?.items[0]?.image?.url) || "/product.png"
-                  }
-                  alt=""
-                  fill
-                  sizes="25vw"
-                  className="absolute object-cover object-top"
-                />
-              )}
-              {/* Out of Stock Label */}
-              {(!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1) && (
-                <div className="absolute top-2 left-2 z-20 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded shadow-lg opacity-90">
-                  Out of Stock
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
-              <div className="flex justify-between items-center">
-                <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
-                <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
-              </div>
+const AllProducts = ({ products, searchParams, isMobile }: { products: any, searchParams?: any, isMobile: any }) => {
+  const wixClient = useWixClient();
+    const { addItem } = useCartStore();
+  
+  const router = useRouter();
+  const [loading, setLoading] = useState<string | null>(null);
 
-              {product.price?.price === product.price?.discountedPrice ? (
-                <h2>₹ {product.price?.price}</h2>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <h2 className="sm:text-base text-sm">
-                    ₹ {product.price?.discountedPrice}
-                  </h2>
-                  <h3 className="text-xs text-gray-500 line-through">
-                    ₹ {product.price?.price}
-                  </h3>
-                </div>
-              )}
-            </div>
+  const handleBuyNow = async (product: products.Product, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      setLoading(product._id!);
+      
+      // Check if product has variants
+      let selectedVariant = null;
+      if (product.variants && product.variants.length > 0) {
+        // Find the first available variant
+        selectedVariant = product.variants.find(variant => 
+          variant.stock?.inStock && (variant.stock?.quantity ?? 0) > 0
+        );
+        
+        if (!selectedVariant) {
+          alert('This product is out of stock');
+          return;
+        }
+      }
 
-            {product.additionalInfoSections && (
-              <div
-                className="text-sm text-gray-500"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(
-                    product.additionalInfoSections.find(
-                      (section: any) => section.title === "shortDesc"
-                    )?.description || ""
-                  ),
-                }}
-              ></div>
-            )}
-            {product.variants && (
-              <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{minHeight: 32}}>
-                {/* Sizes */}
-                <div className="flex gap-2">
-                  {product.variants.map((variant, index) => {
-                    const size = variant.choices?.['Size'];
-                    const outOfStock = !variant.stock?.inStock || (variant.stock?.quantity ?? 0) < 1;
-                    return size ? (
-                      <p
-                        key={index}
-                        className={`font-extralight ${outOfStock ? "line-through text-gray-400" : ""}`}
-                        title={outOfStock ? "Out of stock" : ""}
-                      >
-                        {size}
-                      </p>
-                    ) : null;
-                  })}
-                </div>
-                {/* BUY NOW button at absolute right */}
-                <button
-                  type="button"
-                  disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1}
-                  className="absolute right-2 top-3 rounded-md -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-3 bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs tracking-wider"
-                  style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px" }}
-                  onClick={e => {
-                    e.preventDefault();
-                    // Add your dropdown/modal logic here
-                  }}
-                >
-                  Buy Now!
-                </button>
-              </div>
-            )}
-          </Link>
-        ))}
-      </>
-    ) : (
-      <Swiper
-        modules={[Scrollbar]}
-        scrollbar={{ draggable: true }}
-        slidesPerView={4}
-      >
-        {products.map((product: products.Product) => (
-          <SwiperSlide className="w-full sm:w-60 h-[430px] sm:h-[430px] m-1" key={product.slug}>
+      addItem(wixClient, product._id!, selectedVariant?._id!, 1);
+      await handleCheckout();
+      
+    } catch (error) {
+      console.error('Error during buy now:', error);
+      alert('Something went wrong. Please try again.');
+    } finally {
+      setLoading(null);
+    }
+  };
+
+    const handleCheckout = async () => {
+      try {
+        const checkout =
+          await wixClient.currentCart.createCheckoutFromCurrentCart({
+            channelType: currentCart.ChannelType.WEB,
+          });
+  
+        const { redirectSession } =
+          await wixClient.redirects.createRedirectSession({
+            ecomCheckout: { checkoutId: checkout.checkoutId },
+            callbacks: {
+              postFlowUrl: window.location.origin,
+              thankYouPageUrl: `${window.location.origin}/success`,
+            },
+          });
+  
+        if (redirectSession?.fullUrl) {
+          window.location.href = redirectSession.fullUrl;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+  return (
+    <>
+      {(searchParams?.cat || isMobile) ? (
+        <>
+          {products.map((product: products.Product) => (
             <Link
               href={"/" + product.slug}
-              className="flex flex-col justify-between relative sm:shadow-md sm:bg-white/90 w-full h-full"
+              className="flex flex-col justify-between relative sm:shadow-md sm:bg-white/90 w-full sm:w-60 h-[430px] sm:h-[430px] m-1"
               key={product._id}
             >
               {product.price?.price !== product.price?.discountedPrice && (
@@ -262,7 +213,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                   -{product.discount?.value}%
                 </span>
               )}
-              <div className="relative w-full h-80 lg:h-96">
+              <div className="relative w-full h-80 lg:h-80">
                 <Image
                   src={product.media?.mainMedia?.image?.url || "/product.png"}
                   alt=""
@@ -282,6 +233,12 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                     sizes="25vw"
                     className="absolute object-cover object-top"
                   />
+                )}
+                {/* Out of Stock Label */}
+                {(!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1) && (
+                  <div className="absolute top-2 left-2 z-20 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded shadow-lg opacity-90">
+                    Out of Stock
+                  </div>
                 )}
               </div>
               <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
@@ -337,25 +294,128 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                   {/* BUY NOW button at absolute right */}
                   <button
                     type="button"
-                    disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1} 
-                    className="absolute right-2 top-3 -translate-y-1/2 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider"
-                    style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px",}}
-                    onClick={e => {
-                      e.preventDefault();
-                      // Add your dropdown/modal logic here
-                    }}
+                    disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
+                    className="absolute right-2 top-3 rounded-md -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-3 bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px" }}
+                    onClick={(e) => handleBuyNow(product, e)}
                   >
-                    BUY NOW!
+                    {loading === product._id ? 'Loading...' : 'Buy Now!'}
                   </button>
                 </div>
               )}
             </Link>
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    )}
-  </>
-);
+          ))}
+        </>
+      ) : (
+        <Swiper
+          modules={[Scrollbar]}
+          scrollbar={{ draggable: true }}
+          slidesPerView={4}
+        >
+          {products.map((product: products.Product) => (
+            <SwiperSlide className="w-full sm:w-60 h-[430px] sm:h-[430px] m-1" key={product.slug}>
+              <Link
+                href={"/" + product.slug}
+                className="flex flex-col justify-between relative sm:shadow-md sm:bg-white/90 w-full h-full"
+                key={product._id}
+              >
+                {product.price?.price !== product.price?.discountedPrice && (
+                  <span className="absolute z-[999] top-0 h-fit py-0.5 px-2 font-bold bg-lama/90 text-white/90 text-sm">
+                    -{product.discount?.value}%
+                  </span>
+                )}
+                <div className="relative w-full h-80 lg:h-96">
+                  <Image
+                    src={product.media?.mainMedia?.image?.url || "/product.png"}
+                    alt=""
+                    fill
+                    sizes="25vw"
+                    className="absolute object-cover z-10 hover:opacity-0 transition-opacity ease-in duration-300 object-top"
+                  />
+                  {product.media?.items && (
+                    <Image
+                      src={
+                        (product.media?.items.length > 1
+                          ? product.media?.items[1]?.image?.url
+                          : product.media?.items[0]?.image?.url) || "/product.png"
+                      }
+                      alt=""
+                      fill
+                      sizes="25vw"
+                      className="absolute object-cover object-top"
+                    />
+                  )}
+                </div>
+                <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
+                  <div className="flex justify-between items-center">
+                    <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
+                    <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
+                  </div>
+
+                  {product.price?.price === product.price?.discountedPrice ? (
+                    <h2>₹ {product.price?.price}</h2>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <h2 className="sm:text-base text-sm">
+                        ₹ {product.price?.discountedPrice}
+                      </h2>
+                      <h3 className="text-xs text-gray-500 line-through">
+                        ₹ {product.price?.price}
+                      </h3>
+                    </div>
+                  )}
+                </div>
+
+                {product.additionalInfoSections && (
+                  <div
+                    className="text-sm text-gray-500"
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(
+                        product.additionalInfoSections.find(
+                          (section: any) => section.title === "shortDesc"
+                        )?.description || ""
+                      ),
+                    }}
+                  ></div>
+                )}
+                {product.variants && (
+                  <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{minHeight: 32}}>
+                    {/* Sizes */}
+                    <div className="flex gap-2">
+                      {product.variants.map((variant, index) => {
+                        const size = variant.choices?.['Size'];
+                        const outOfStock = !variant.stock?.inStock || (variant.stock?.quantity ?? 0) < 1;
+                        return size ? (
+                          <p
+                            key={index}
+                            className={`font-extralight ${outOfStock ? "line-through text-gray-400" : ""}`}
+                            title={outOfStock ? "Out of stock" : ""}
+                          >
+                            {size}
+                          </p>
+                        ) : null;
+                      })}
+                    </div>
+                    {/* BUY NOW button at absolute right */}
+                    <button
+                      type="button"
+                      disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
+                      className="absolute right-2 top-3 -translate-y-1/2 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px",}}
+                      onClick={(e) => handleBuyNow(product, e)}
+                    >
+                      {loading === product._id ? 'Loading...' : 'BUY NOW!'}
+                    </button>
+                  </div>
+                )}
+              </Link>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
+    </>
+  );
+};
 
 const ProductsWithFilters = ({ products, filters, name, searchParam, isMobile }: { products: any, filters: any, name: any, searchParam: any, isMobile: any }) => {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);

@@ -144,6 +144,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
   const [showSizePopup, setShowSizePopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<products.Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [actionType, setActionType] = useState<'buyNow' | 'addToCart'>('buyNow'); // Track the action type
 
   const handleBuyNow = async (product: products.Product, e: React.MouseEvent) => {
     e.preventDefault();
@@ -161,9 +162,10 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
         return;
       }
 
-      // Show size selection popup
+      // Show size selection popup for buy now
       setSelectedProduct(product);
       setSelectedVariant(null);
+      setActionType('buyNow');
       setShowSizePopup(true);
       return;
     }
@@ -197,6 +199,43 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
     }
   };
 
+  const handleAddToCart = async (product: products.Product, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Check if product has variants
+    if (product.variants && product.variants.length > 0) {
+      // Check if there are available variants
+      const availableVariants = product.variants.filter(variant =>
+        variant.stock?.inStock && (variant.stock?.quantity ?? 0) > 0
+      );
+
+      if (availableVariants.length === 0) {
+        alert('This product is out of stock');
+        return;
+      }
+
+      // Show size selection popup for add to cart
+      setSelectedProduct(product);
+      setSelectedVariant(null);
+      setActionType('addToCart');
+      setShowSizePopup(true);
+      return;
+    }
+
+    // If no variants, add directly to cart
+    try {
+      setLoading(product._id!);
+      await addItem(wixClient, product._id!, '', 1);
+      // Optional: Show success message
+      alert('Item added to cart!');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setLoading(null);
+    }
+  };
+
   const handleSizeSelection = async () => {
     if (!selectedProduct || !selectedVariant) return;
 
@@ -206,25 +245,31 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
 
       await addItem(wixClient, selectedProduct._id!, selectedVariant, 1);
 
-      const checkout =
-        await wixClient.currentCart.createCheckoutFromCurrentCart({
-          channelType: currentCart.ChannelType.WEB,
-        });
+      if (actionType === 'buyNow') {
+        // Proceed to checkout for buy now
+        const checkout =
+          await wixClient.currentCart.createCheckoutFromCurrentCart({
+            channelType: currentCart.ChannelType.WEB,
+          });
 
-      const { redirectSession } =
-        await wixClient.redirects.createRedirectSession({
-          ecomCheckout: { checkoutId: checkout.checkoutId },
-          callbacks: {
-            postFlowUrl: window.location.origin,
-            thankYouPageUrl: `${window.location.origin}/success`,
-          },
-        });
+        const { redirectSession } =
+          await wixClient.redirects.createRedirectSession({
+            ecomCheckout: { checkoutId: checkout.checkoutId },
+            callbacks: {
+              postFlowUrl: window.location.origin,
+              thankYouPageUrl: `${window.location.origin}/success`,
+            },
+          });
 
-      if (redirectSession?.fullUrl) {
-        window.location.href = redirectSession.fullUrl;
+        if (redirectSession?.fullUrl) {
+          window.location.href = redirectSession.fullUrl;
+        }
+      } else {
+        // Just add to cart
+        alert('Item added to cart!');
       }
     } catch (error) {
-      console.error('Error during buy now:', error);
+      console.error('Error during size selection:', error);
     } finally {
       setLoading(null);
       setSelectedProduct(null);
@@ -304,7 +349,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 disabled={!selectedVariant || loading === selectedProduct._id}
                 className="flex-1 px-4 py-2 bg-lama hover:bg-yellow-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading === selectedProduct._id ? 'Loading...' : 'Buy Now'}
+                {loading === selectedProduct._id ? 'Loading...' : (actionType === 'buyNow' ? 'Buy Now' : 'Add to Cart')}
               </button>
             </div>
           </div>
@@ -355,7 +400,13 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
               <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
                 <div className="flex justify-between items-center">
                   <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
-                  <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
+                  <button
+                    onClick={(e) => handleAddToCart(product, e)}
+                    disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
+                    className="sm:text-xl font-semibold hover:text-lama disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <PiHandbagSimpleLight className="hover:fill-lama" />
+                  </button>
                 </div>
 
                 {product.price?.price === product.price?.discountedPrice ? (
@@ -465,7 +516,13 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
                   <div className="flex justify-between items-center">
                     <p className="font-medium text-xs sm:text-sm text-[#3b3b3b]/90">{product.name}</p>
-                    <p className="sm:text-xl font-semibold"><PiHandbagSimpleLight className="hover:fill-lama" /></p>
+                    <button
+                      onClick={(e) => handleAddToCart(product, e)}
+                      disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
+                      className="sm:text-xl font-semibold hover:text-lama disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <PiHandbagSimpleLight className="hover:fill-lama" />
+                    </button>
                   </div>
 
                   {product.price?.price === product.price?.discountedPrice ? (

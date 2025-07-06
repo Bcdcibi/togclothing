@@ -6,16 +6,11 @@ import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
 import { currentCart } from "@wix/ecom";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, TransitionChild } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import Link from "next/link";
 
 const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStateAction<boolean>> }) => {
-  // TEMPORARY
-  // const cartItems = true;
-
   const wixClient = useWixClient();
-
   const [price, setPrice] = useState<number>(0);
   const { cart, isLoading, removeItem } = useCartStore();
 
@@ -52,34 +47,35 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
     }
   };
 
+  // Don't render if modal is closed
+  if (!open) return null;
+
   return (
-    <Dialog open={open} onClose={setOpen} className="relative z-[99999]">
-      <DialogBackdrop
-        transition
-        className="fixed inset-0 bg-gray-600/75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
+    <div className="relative z-[99999]">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-gray-600/75 transition-opacity duration-500 ease-in-out"
+        onClick={() => setOpen(false)}
       />
 
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           {/* Desktop: slide from right */}
           <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 hidden md:flex">
-            <DialogPanel
-              transition
-              className="pointer-events-auto relative w-screen max-w-md transform animate-slideInRight duration-300 transition data-[closed]:translate-x-full sm:duration-700"
-            >
-              <TransitionChild>
-                <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out data-[closed]:opacity-0 sm:-ml-10 sm:pr-4">
-                  <button
-                    type="button"
-                    onClick={() => setOpen(false)}
-                    className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
-                  >
-                    <span className="absolute -inset-2.5" />
-                    <span className="sr-only">Close panel</span>
-                    <XMarkIcon aria-hidden="true" className="size-6" />
-                  </button>
-                </div>
-              </TransitionChild>
+            <div className="pointer-events-auto relative w-screen max-w-md transform animate-slideInRight duration-300 transition">
+              {/* Close button */}
+              <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out sm:-ml-10 sm:pr-4">
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                >
+                  <span className="absolute -inset-2.5" />
+                  <span className="sr-only">Close panel</span>
+                  <XMarkIcon aria-hidden="true" className="size-6" />
+                </button>
+              </div>
+
               <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
                 {(cart.lineItems?.length === 0 || !cart.lineItems) ? (
                   <div className="flex flex-col justify-center items-center w-full">
@@ -99,8 +95,7 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                 ) : (
                   <section className="py-8 relative">
                     <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
-                      <h2 className="title font-manrope font-bold text-4xl leading-10 mb-8 text-center text-black/80">Shopping Cart
-                      </h2>
+                      <h2 className="title font-manrope font-bold text-4xl leading-10 mb-8 text-center text-black/80">Shopping Cart</h2>
                       {cart.lineItems?.map((item) => (
                         <div key={item._id} className="rounded-lg border border-gray-200 p-3 lg:p-4 grid grid-cols-12 mb-3 max-lg:max-w-lg max-lg:mx-auto gap-y-4">
                           <div className="col-span-4 img box">
@@ -122,17 +117,24 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                           <div className="col-span-8 detail w-full pl-3">
                             <div className="flex items-center justify-between gap-2 w-full">
                               <h5 className="font-manrope font-bold text-base leading-2 text-gray-900/80">{item.productName?.original}</h5>
-                              <button style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
-                                onClick={() => removeItem(wixClient, item._id!)} className="rounded-full group flex items-center justify-center focus-within:outline-red-500">
-                                <svg width="34" height="34" viewBox="0 0 34 34" fill="none"
-                                  xmlns="http://www.w3.org/2000/svg">
-                                  <circle className="fill-red-50 transition-all duration-500 group-hover:fill-red-400"
-                                    cx="17" cy="17" r="17" fill="" />
-                                  <path className="stroke-red-500 transition-all duration-500 group-hover:stroke-white"
-                                    d="M14.1673 13.5997V12.5923C14.1673 11.8968 14.7311 11.333 15.4266 11.333H18.5747C19.2702 11.333 19.834 11.8968 19.834 12.5923V13.5997M19.834 13.5997C19.834 13.5997 14.6534 13.5997 11.334 13.5997C6.90804 13.5998 27.0933 13.5998 22.6673 13.5997C21.5608 13.5997 19.834 13.5997 19.834 13.5997ZM12.4673 13.5997H21.534V18.8886C21.534 20.6695 21.534 21.5599 20.9807 22.1131C20.4275 22.6664 19.5371 22.6664 17.7562 22.6664H16.2451C14.4642 22.6664 13.5738 22.6664 13.0206 22.1131C12.4673 21.5599 12.4673 20.6695 12.4673 18.8886V13.5997Z"
-                                    stroke="#EF4444" strokeWidth="1.6" strokeLinecap="round" />
-                                </svg>
-                              </button>
+                              <div onClick={(e) => e.stopPropagation()}>
+                                <button type="button"
+                                  onClick={(e) => {
+                                    removeItem(wixClient, item._id!);
+                                  }}
+                                  style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
+                                  className="rounded-full group flex items-center justify-center focus:outline-none"
+                                >
+                                  <svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <circle className="fill-red-50 transition-all duration-500 group-hover:fill-red-400"
+                                      cx="17" cy="17" r="17" fill="" />
+                                    <path className="stroke-red-500 transition-all duration-500 group-hover:stroke-white"
+                                      d="M14.1673 13.5997V12.5923C14.1673 11.8968 14.7311 11.333 15.4266 11.333H18.5747C19.2702 11.333 19.834 11.8968 19.834 12.5923V13.5997M19.834 13.5997C19.834 13.5997 14.6534 13.5997 11.334 13.5997C6.90804 13.5998 27.0933 13.5998 22.6673 13.5997C21.5608 13.5997 19.834 13.5997 19.834 13.5997ZM12.4673 13.5997H21.534V18.8886C21.534 20.6695 21.534 21.5599 20.9807 22.1131C20.4275 22.6664 19.5371 22.6664 17.7562 22.6664H16.2451C14.4642 22.6664 13.5738 22.6664 13.0206 22.1131C12.4673 21.5599 12.4673 20.6695 12.4673 18.8886V13.5997Z"
+                                      stroke="#EF4444" strokeWidth="1.6" strokeLinecap="round" />
+                                  </svg>
+                                </button>
+                              </div>
                             </div>
                             {(item?.descriptionLines?.length ?? 0) > 0 && (
                               <div className="flex justify-between items-center">
@@ -170,15 +172,12 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                   </section>
                 )}
               </div>
-            </DialogPanel>
+            </div>
           </div>
 
           {/* Mobile: slide from bottom */}
           <div className="pointer-events-none fixed inset-x-0 bottom-0 flex md:hidden z-50">
-            <DialogPanel
-              transition
-              className="pointer-events-auto relative w-screen max-h-[90vh] transform animate-slideInBottom duration-300 transition data-[closed]:translate-x-full sm:duration-700"
-            >
+            <div className="pointer-events-auto relative w-screen max-h-[90vh] transform animate-slideInBottom duration-300 transition">
               <div className="flex flex-col bg-white rounded-t-2xl shadow-2xl overflow-hidden h-full">
                 {/* Top Bar with Close Button */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200">
@@ -251,7 +250,7 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                             </div>
                             {(item?.descriptionLines?.length ?? 0) > 0 && (
                               <p className="text-gray-500 font-light text-xs mt-1 tracking-wider">
-                                  {item.descriptionLines?.[0]?.name?.original ?? ""}: {item.descriptionLines?.[0]?.plainText?.original ?? ""}
+                                {item.descriptionLines?.[0]?.name?.original ?? ""}: {item.descriptionLines?.[0]?.plainText?.original ?? ""}
                               </p>
                             )}
                             <p className="text-gray-500 font-light text-xs mt-1 tracking-wider">Quantity: {item.quantity}</p>
@@ -283,11 +282,11 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                   </div>
                 )}
               </div>
-            </DialogPanel>
+            </div>
           </div>
         </div>
       </div>
-    </Dialog>
+    </div>
   );
 };
 

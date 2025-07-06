@@ -229,14 +229,15 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 {/* BUY NOW button at absolute right */}
                 <button
                   type="button"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-3 bg-yellow-400 hover:bg-yellow-500 text-black text-[10px] sm:text-xs tracking-wider"
-                  style={{ fontWeight: 400, minWidth: "70px", maxHeight: "28px", borderRadius: 0 }}
+                  disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1}
+                  className="absolute right-2 top-3 rounded-md -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-3 bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs tracking-wider"
+                  style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px" }}
                   onClick={e => {
                     e.preventDefault();
                     // Add your dropdown/modal logic here
                   }}
                 >
-                  Buy Now
+                  Buy Now!
                 </button>
               </div>
             )}
@@ -336,14 +337,15 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                   {/* BUY NOW button at absolute right */}
                   <button
                     type="button"
-                    className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-1 bg-yellow-400 hover:bg-yellow-500 text-black text-[10px] sm:text-xs uppercase tracking-wider"
-                    style={{ fontWeight: 400, minWidth: "70px", maxHeight: "28px", borderRadius: 0 }}
+                    disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1} 
+                    className="absolute right-2 top-3 -translate-y-1/2 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider"
+                    style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px",}}
                     onClick={e => {
                       e.preventDefault();
                       // Add your dropdown/modal logic here
                     }}
                   >
-                    BUY NOW
+                    BUY NOW!
                   </button>
                 </div>
               )}

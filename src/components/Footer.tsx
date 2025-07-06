@@ -164,7 +164,7 @@ const Footer = async () => {
           <p className="text-white text-base text-center md:text-left mb-4 md:mb-0">
             © 2025 | The Togclothing. Powered by {" "}
             <a href="#" className="text-blue-500 hover:text-blue-400">
-              BCD
+              Better Call Devs
             </a>
             .
           </p>

@@ -141,29 +141,37 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
 
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [showSizePopup, setShowSizePopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<products.Product | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
 
   const handleBuyNow = async (product: products.Product, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    try {
-      setLoading(product._id!);
+    // Check if product has variants
+    if (product.variants && product.variants.length > 0) {
+      // Check if there are available variants
+      const availableVariants = product.variants.filter(variant =>
+        variant.stock?.inStock && (variant.stock?.quantity ?? 0) > 0
+      );
 
-      // Check if product has variants
-      let selectedVariant = null;
-      if (product.variants && product.variants.length > 0) {
-        // Find the first available variant
-        selectedVariant = product.variants.find(variant =>
-          variant.stock?.inStock && (variant.stock?.quantity ?? 0) > 0
-        );
-
-        if (!selectedVariant) {
-          alert('This product is out of stock');
-          return;
-        }
+      if (availableVariants.length === 0) {
+        alert('This product is out of stock');
+        return;
       }
 
-      await addItem(wixClient, product._id!, selectedVariant?._id!, 1);
+      // Show size selection popup
+      setSelectedProduct(product);
+      setSelectedVariant(null);
+      setShowSizePopup(true);
+      return;
+    }
+
+    // If no variants, proceed with original logic
+    try {
+      setLoading(product._id!);
+      await addItem(wixClient, product._id!, '', 1);
 
       const checkout =
         await wixClient.currentCart.createCheckoutFromCurrentCart({
@@ -189,8 +197,120 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
     }
   };
 
+  const handleSizeSelection = async () => {
+    if (!selectedProduct || !selectedVariant) return;
+
+    try {
+      setLoading(selectedProduct._id!);
+      setShowSizePopup(false);
+
+      await addItem(wixClient, selectedProduct._id!, selectedVariant, 1);
+
+      const checkout =
+        await wixClient.currentCart.createCheckoutFromCurrentCart({
+          channelType: currentCart.ChannelType.WEB,
+        });
+
+      const { redirectSession } =
+        await wixClient.redirects.createRedirectSession({
+          ecomCheckout: { checkoutId: checkout.checkoutId },
+          callbacks: {
+            postFlowUrl: window.location.origin,
+            thankYouPageUrl: `${window.location.origin}/success`,
+          },
+        });
+
+      if (redirectSession?.fullUrl) {
+        window.location.href = redirectSession.fullUrl;
+      }
+    } catch (error) {
+      console.error('Error during buy now:', error);
+    } finally {
+      setLoading(null);
+      setSelectedProduct(null);
+      setSelectedVariant(null);
+    }
+  };
+
+  const closeSizePopup = () => {
+    setShowSizePopup(false);
+    setSelectedProduct(null);
+    setSelectedVariant(null);
+  };
+
   return (
     <>
+      {/* Size Selection Popup */}
+      {showSizePopup && selectedProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Select Size</h3>
+              <button
+                onClick={closeSizePopup}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">{selectedProduct.name}</p>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-lg font-semibold">
+                  ₹ {selectedProduct.price?.discountedPrice || selectedProduct.price?.price}
+                </span>
+                {selectedProduct.price?.price !== selectedProduct.price?.discountedPrice && (
+                  <span className="text-sm text-gray-500 line-through">
+                    ₹ {selectedProduct.price?.price}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <p className="text-sm font-medium mb-3">Available Sizes:</p>
+              <div className="grid grid-cols-3 gap-2">
+                {selectedProduct.variants
+                  ?.filter(variant => variant.stock?.inStock && (variant.stock?.quantity ?? 0) > 0)
+                  .map((variant, index) => {
+                    const size = variant.choices?.['Size'];
+                    return size ? (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedVariant(variant._id!)}
+                        className={`p-2 border rounded text-sm ${
+                          selectedVariant === variant._id
+                            ? 'border-lama border-2'
+                            : 'border-gray-300 hover:border-lama'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ) : null;
+                  })}
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={closeSizePopup}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSizeSelection}
+                disabled={!selectedVariant || loading === selectedProduct._id}
+                className="flex-1 px-4 py-2 bg-lama hover:bg-yellow-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading === selectedProduct._id ? 'Loading...' : 'Buy Now'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {(searchParams?.cat || isMobile) ? (
         <>
           {products.map((product: products.Product) => (
@@ -336,6 +456,11 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                       className="absolute object-cover object-top"
                     />
                   )}
+                  {(!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1) && (
+                  <div className="absolute top-2 left-2 z-20 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded shadow-lg opacity-90">
+                    Out of Stock
+                  </div>
+                )}
                 </div>
                 <div className="flex flex-col py-2 px-4 sm:py-3 gap-0.5 sm:gap-1">
                   <div className="flex justify-between items-center">

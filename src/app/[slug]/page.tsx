@@ -90,8 +90,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
         <Suspense fallback={<Skeleton />}>
           <ProductList
             name="Featured Products"
-            categoryId='1c692443-80ac-639f-d459-aed9ebfe93cf'
-            limit={4}
+            categoryId='1b7aaea5-7082-c9f6-2b18-5248ba478bf7'
           />
         </Suspense>
       </div>

@@ -125,7 +125,7 @@ const ProductList = async ({
       {searchParams?.cat ? (
         <ProductsWithFilters name={name} searchParam={searchParams} isMobile={isMobile} filters={filters} products={products} />
       ) : (
-        <div className="mt-8 sm:mt-12 flex gap-x-2 md:gap-x-8 gap-y-2 justify-center sm:items-center flex-wrap">
+        <div className="mt-8 p-0 sm:mt-12 flex gap-x-0.5 md:gap-x-8 gap-y-2 sm:justify-center sm:items-center flex-wrap">
           <AllProducts products={products} searchParams={searchParams} isMobile={isMobile} />
         </div>
       )}
@@ -361,7 +361,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
           {products.map((product: products.Product) => (
             <Link
               href={"/" + product.slug}
-              className="flex flex-col justify-between relative sm:shadow-md sm:bg-white/90 w-full sm:w-60 h-[430px] sm:h-[430px] m-1"
+              className="flex flex-col justify-between mx-auto relative w-[47%] sm:shadow-md sm:bg-white/90 sm:w-60 sm:h-[430px] m-1"
               key={product._id}
             >
               {product.price?.price !== product.price?.discountedPrice && (
@@ -436,7 +436,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 ></div>
               )}
               {product.variants && (
-                <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{ minHeight: 32 }}>
+                <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{ minHeight:32 }}>
                   {/* Sizes */}
                   <div className="flex gap-2">
                     {product.variants.map((variant, index) => {
@@ -457,7 +457,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                   <button
                     type="button"
                     disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
-                    className="absolute right-2 top-3 rounded-md -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-3 bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute right-2 -top-4 sm:top-3 rounded-md -translate-y-1/2 flex items-center justify-center px-4 py-2 pr-3 bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px" }}
                     onClick={(e) => handleBuyNow(product, e)}
                   >
@@ -573,7 +573,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                     <button
                       type="button"
                       disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
-                      className="absolute right-2 top-3 -translate-y-1/2 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute right-2 sm:top-3 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px", }}
                       onClick={(e) => handleBuyNow(product, e)}
                     >

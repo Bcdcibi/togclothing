@@ -43,7 +43,7 @@ const HomePage = async () => {
           <CategoryList />
         </Suspense>
       </div>
-      <div className="mt-16 px-1 md:px-12 xl:px-16 2xl:px-32">
+      <div className="mt-16 md:px-12 xl:px-16 2xl:px-32">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center text-black/80">New Arrivals</h1>
         <Suspense fallback={<Skeleton />}>
           <ProductList
@@ -53,7 +53,7 @@ const HomePage = async () => {
           />
         </Suspense>
       </div>
-      <div className="mt-16 px-1 md:px-8 xl:px-16 2xl:px-32">
+      <div className="mt-16 md:px-8 xl:px-16 2xl:px-32">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-semibold text-center text-black/80">Featured Products</h1>
         <Suspense fallback={<Skeleton />}>
           <ProductList

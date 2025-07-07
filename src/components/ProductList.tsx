@@ -361,7 +361,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
           {products.map((product: products.Product) => (
             <Link
               href={"/" + product.slug}
-              className="flex flex-col justify-between mx-auto relative w-[47%] sm:shadow-md sm:bg-white/90 sm:w-60 sm:h-[430px] m-1"
+              className="flex flex-col justify-between mx-auto relative w-[49%] sm:shadow-md sm:bg-white/90 sm:w-60 sm:h-[430px] m-1"
               key={product._id}
             >
               {product.price?.price !== product.price?.discountedPrice && (

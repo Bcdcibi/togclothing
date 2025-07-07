@@ -735,8 +735,8 @@ const ProductsWithFilters = ({ products, filters, name, searchParam, isMobile }:
           </div>
         </Dialog>
 
-        <main className="mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-baseline justify-between border-b border-gray-300/70 pb-6 pt-10">
+        <main className="mx-auto sm:px-6 lg:px-8">
+          <div className="flex items-baseline px-4 justify-between border-b border-gray-300/70 pb-6 pt-10">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">{name}</h1>
 
             <div className="flex items-center">
@@ -850,7 +850,7 @@ const ProductsWithFilters = ({ products, filters, name, searchParam, isMobile }:
               </form>
 
               {/* Product grid */}
-              <div className="lg:col-span-3 flex gap-x-2 md:gap-x-8 gap-y-16 justify-center items-center flex-wrap">
+              <div className="lg:col-span-3 flex md:gap-x-8 gap-y-16 justify-center items-center flex-wrap">
                 <AllProducts products={filteredProducts} searchParams={searchParam} isMobile={isMobile} />
               </div>
             </div>

@@ -144,7 +144,121 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
   const [showSizePopup, setShowSizePopup] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<products.Product | null>(null);
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
-  const [actionType, setActionType] = useState<'buyNow' | 'addToCart'>('buyNow'); // Track the action type
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [actionType, setActionType] = useState<'buyNow' | 'addToCart'>('buyNow');
+
+  // Helper function to check if product has color variants
+  const hasColorVariants = (product: products.Product) => {
+    if (!product.variants) return false;
+    return product.variants.some(variant => variant.choices?.['Color']);
+  };
+
+  // Helper function to check if product has size variants
+  const hasSizeVariants = (product: products.Product) => {
+    if (!product.variants) return false;
+    return product.variants.some(variant => variant.choices?.['Size']);
+  };
+
+  // Helper function to get unique sizes from all variants
+  const getUniqueSizes = (product: products.Product) => {
+    if (!product.variants) return [];
+    
+    const sizes = new Set<string>();
+    product.variants.forEach(variant => {
+      const size = variant.choices?.['Size'];
+      if (size) {
+        sizes.add(size);
+      }
+    });
+    
+    return Array.from(sizes);
+  };
+
+  // Helper function to get unique colors from all variants
+  const getUniqueColors = (product: products.Product) => {
+    if (!product.variants) return [];
+    
+    const colors = new Set<string>();
+    product.variants.forEach(variant => {
+      const color = variant.choices?.['Color'];
+      if (color) {
+        colors.add(color);
+      }
+    });
+    
+    return Array.from(colors);
+  };
+
+  // Helper function to get available colors for a specific size
+  const getAvailableColorsForSize = (product: products.Product, size: string) => {
+    if (!product.variants) return [];
+    
+    // If product doesn't have color variants, return empty array
+    if (!hasColorVariants(product)) return [];
+    
+    return product.variants
+      .filter(variant => 
+        variant.choices?.['Size'] === size && 
+        variant.stock?.inStock && 
+        (variant.stock?.quantity ?? 0) > 0
+      )
+      .map(variant => variant.choices?.['Color'])
+      .filter(color => color) as string[];
+  };
+
+  // Helper function to get available sizes for a specific color
+  const getAvailableSizesForColor = (product: products.Product, color: string) => {
+    if (!product.variants) return [];
+    
+    return product.variants
+      .filter(variant => 
+        variant.choices?.['Color'] === color && 
+        variant.stock?.inStock && 
+        (variant.stock?.quantity ?? 0) > 0
+      )
+      .map(variant => variant.choices?.['Size'])
+      .filter(size => size) as string[];
+  };
+
+  // Helper function to check if a size is available (modified for products with only sizes)
+  const isSizeAvailable = (product: products.Product, size: string) => {
+    if (!product.variants) return false;
+    
+    // If product has both size and color variants
+    if (hasColorVariants(product)) {
+      return getAvailableColorsForSize(product, size).length > 0;
+    }
+    
+    // If product has only size variants (no colors)
+    return product.variants.some(variant => 
+      variant.choices?.['Size'] === size && 
+      variant.stock?.inStock && 
+      (variant.stock?.quantity ?? 0) > 0
+    );
+  };
+
+  // Helper function to find variant by size and color
+  const findVariantByChoices = (product: products.Product, size: string, color?: string) => {
+    if (!product.variants) return null;
+    
+    // If product has both size and color
+    if (color && hasColorVariants(product)) {
+      return product.variants.find(variant => 
+        variant.choices?.['Size'] === size && 
+        variant.choices?.['Color'] === color &&
+        variant.stock?.inStock && 
+        (variant.stock?.quantity ?? 0) > 0
+      );
+    }
+    
+    // If product has only size (no color)
+    return product.variants.find(variant => 
+      variant.choices?.['Size'] === size &&
+      variant.stock?.inStock && 
+      (variant.stock?.quantity ?? 0) > 0
+    );
+  };
 
   const handleBuyNow = async (product: products.Product, e: React.MouseEvent) => {
     e.preventDefault();
@@ -162,9 +276,11 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
         return;
       }
 
-      // Show size selection popup for buy now
+      // Show size and color selection popup for buy now
       setSelectedProduct(product);
       setSelectedVariant(null);
+      setSelectedSize(null);
+      setSelectedColor(null);
       setActionType('buyNow');
       setShowSizePopup(true);
       return;
@@ -215,9 +331,11 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
         return;
       }
 
-      // Show size selection popup for add to cart
+      // Show size and color selection popup for add to cart
       setSelectedProduct(product);
       setSelectedVariant(null);
+      setSelectedSize(null);
+      setSelectedColor(null);
       setActionType('addToCart');
       setShowSizePopup(true);
       return;
@@ -227,7 +345,6 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
     try {
       setLoading(product._id!);
       await addItem(wixClient, product._id!, '', 1);
-      // Optional: Show success message
       alert('Item added to cart!');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -236,8 +353,37 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
     }
   };
 
-  const handleSizeSelection = async () => {
-    if (!selectedProduct || !selectedVariant) return;
+  const handleSizeSelection = (size: string) => {
+    setSelectedSize(size);
+    setSelectedColor(null); // Reset color when size changes
+    setSelectedVariant(null); // Reset variant when size changes
+    
+    // If product has no color variants, directly find the variant by size
+    if (selectedProduct && !hasColorVariants(selectedProduct)) {
+      const variant = findVariantByChoices(selectedProduct, size);
+      if (variant) {
+        setSelectedVariant(variant._id!);
+      }
+    }
+  };
+
+  const handleColorSelection = (color: string) => {
+    setSelectedColor(color);
+    
+    // Find the corresponding variant
+    if (selectedProduct && selectedSize) {
+      const variant = findVariantByChoices(selectedProduct, selectedSize, color);
+      if (variant) {
+        setSelectedVariant(variant._id!);
+      }
+    }
+  };
+
+  const handleVariantSelection = async () => {
+    if (!selectedProduct || !selectedVariant || !selectedSize) return;
+    
+    // Check if color is required (only if product has color variants)
+    if (hasColorVariants(selectedProduct) && !selectedColor) return;
 
     try {
       setLoading(selectedProduct._id!);
@@ -269,11 +415,13 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
         alert('Item added to cart!');
       }
     } catch (error) {
-      console.error('Error during size selection:', error);
+      console.error('Error during variant selection:', error);
     } finally {
       setLoading(null);
       setSelectedProduct(null);
       setSelectedVariant(null);
+      setSelectedSize(null);
+      setSelectedColor(null);
     }
   };
 
@@ -281,16 +429,18 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
     setShowSizePopup(false);
     setSelectedProduct(null);
     setSelectedVariant(null);
+    setSelectedSize(null);
+    setSelectedColor(null);
   };
 
   return (
     <>
-      {/* Size Selection Popup */}
+      {/* Size and Color Selection Popup */}
       {showSizePopup && selectedProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[80vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Select Size</h3>
+              <h3 className="text-lg font-semibold">Select Size{hasColorVariants(selectedProduct) ? ' & Color' : ''}</h3>
               <button
                 onClick={closeSizePopup}
                 className="text-gray-500 hover:text-gray-700"
@@ -313,29 +463,64 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
               </div>
             </div>
 
+            {/* Size Selection */}
             <div className="mb-6">
-              <p className="text-sm font-medium mb-3">Available Sizes:</p>
+              <p className="text-sm font-medium mb-3">Select Size:</p>
               <div className="grid grid-cols-3 gap-2">
-                {selectedProduct.variants
-                  ?.filter(variant => variant.stock?.inStock && (variant.stock?.quantity ?? 0) > 0)
-                  .map((variant, index) => {
-                    const size = variant.choices?.['Size'];
-                    return size ? (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedVariant(variant._id!)}
-                        className={`p-2 border rounded text-sm ${
-                          selectedVariant === variant._id
-                            ? 'border-lama border-2'
-                            : 'border-gray-300 hover:border-lama'
-                        }`}
-                      >
-                        {size}
-                      </button>
-                    ) : null;
-                  })}
+                {getUniqueSizes(selectedProduct).map((size) => {
+                  const isAvailable = isSizeAvailable(selectedProduct, size);
+                  
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => isAvailable && handleSizeSelection(size)}
+                      disabled={!isAvailable}
+                      className={`p-2 border rounded text-sm ${
+                        selectedSize === size
+                          ? 'border-lama border-2 bg-lama/10'
+                          : isAvailable
+                          ? 'border-gray-300 hover:border-lama'
+                          : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
               </div>
             </div>
+
+            {/* Color Selection - Only show if product has color variants */}
+            {selectedSize && hasColorVariants(selectedProduct) && (
+              <div className="mb-6">
+                <p className="text-sm font-medium mb-3">Select Color:</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {getAvailableColorsForSize(selectedProduct, selectedSize).map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => handleColorSelection(color)}
+                      className={`p-2 border rounded text-sm ${
+                        selectedColor === color
+                          ? 'border-lama border-2 bg-lama/10'
+                          : 'border-gray-300 hover:border-lama'
+                      }`}
+                    >
+                      {color}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Selected Variant Info */}
+            {selectedSize && (
+              <div className="mb-4 p-3 bg-gray-50 rounded">
+                <p className="text-sm text-gray-600">
+                  Selected: <span className="font-medium">{selectedSize}</span>
+                  {selectedColor && <span> - <span className="font-medium">{selectedColor}</span></span>}
+                </p>
+              </div>
+            )}
 
             <div className="flex gap-3">
               <button
@@ -345,7 +530,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 Cancel
               </button>
               <button
-                onClick={handleSizeSelection}
+                onClick={handleVariantSelection}
                 disabled={!selectedVariant || loading === selectedProduct._id}
                 className="flex-1 px-4 py-2 bg-lama hover:bg-yellow-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -437,20 +622,20 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
               )}
               {product.variants && (
                 <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{ minHeight:32 }}>
-                  {/* Sizes */}
+                  {/* Unique Sizes */}
                   <div className="flex gap-2">
-                    {product.variants.map((variant, index) => {
-                      const size = variant.choices?.['Size'];
-                      const outOfStock = !variant.stock?.inStock || (variant.stock?.quantity ?? 0) < 1;
-                      return size ? (
+                    {getUniqueSizes(product).map((size) => {
+                      const isAvailable = isSizeAvailable(product, size);
+                      
+                      return (
                         <p
-                          key={index}
-                          className={`font-extralight ${outOfStock ? "line-through text-gray-400" : ""}`}
-                          title={outOfStock ? "Out of stock" : ""}
+                          key={size}
+                          className={`font-extralight ${!isAvailable ? "line-through text-gray-400" : ""}`}
+                          title={!isAvailable ? "Out of stock" : (hasColorVariants(product) ? `Available in: ${getAvailableColorsForSize(product, size).join(', ')}` : "Available")}
                         >
                           {size}
                         </p>
-                      ) : null;
+                      );
                     })}
                   </div>
                   {/* BUY NOW button at absolute right */}
@@ -553,20 +738,20 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                 )}
                 {product.variants && (
                   <div className="relative flex items-center px-4 mt-1 mb-0 text-xs sm:text-sm" style={{ minHeight: 32 }}>
-                    {/* Sizes */}
+                    {/* Unique Sizes */}
                     <div className="flex gap-2">
-                      {product.variants.map((variant, index) => {
-                        const size = variant.choices?.['Size'];
-                        const outOfStock = !variant.stock?.inStock || (variant.stock?.quantity ?? 0) < 1;
-                        return size ? (
+                      {getUniqueSizes(product).map((size) => {
+                        const isAvailable = isSizeAvailable(product, size);
+                        
+                        return (
                           <p
-                            key={index}
-                            className={`font-extralight ${outOfStock ? "line-through text-gray-400" : ""}`}
-                            title={outOfStock ? "Out of stock" : ""}
+                            key={size}
+                            className={`font-extralight ${!isAvailable ? "line-through text-gray-400" : ""}`}
+                            title={!isAvailable ? "Out of stock" : (hasColorVariants(product) ? `Available in: ${getAvailableColorsForSize(product, size).join(', ')}` : "Available")}
                           >
                             {size}
                           </p>
-                        ) : null;
+                        );
                       })}
                     </div>
                     {/* BUY NOW button at absolute right */}
@@ -740,7 +925,7 @@ const ProductsWithFilters = ({ products, filters, name, searchParam, isMobile }:
             <h1 className="text-4xl font-bold tracking-tight text-gray-900">{name}</h1>
 
             <div className="flex items-center">
-              <Menu as="div" className="relative inline-block text-left z-[9999]">
+              <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
                     Sort
@@ -753,7 +938,7 @@ const ProductsWithFilters = ({ products, filters, name, searchParam, isMobile }:
 
                 <MenuItems
                   transition
-                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  className="absolute right-0 z-[1000] mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <div className="py-1">
                     {sortOptions.map((option) => (

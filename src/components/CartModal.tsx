@@ -96,62 +96,69 @@ const CartModal = ({ open, setOpen }: { open: boolean, setOpen: Dispatch<SetStat
                   <section className="py-8 relative">
                     <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
                       <h2 className="title font-manrope font-bold text-4xl leading-10 mb-8 text-center text-black/80">Shopping Cart</h2>
-                      {cart.lineItems?.map((item) => (
-                        <div key={item._id} className="rounded-lg border border-gray-200 p-3 lg:p-4 grid grid-cols-12 mb-3 max-lg:max-w-lg max-lg:mx-auto gap-y-4">
-                          <div className="col-span-4 img box">
-                            {item.image && (
-                              <Image
-                                src={wixMedia.getScaledToFillImageUrl(
-                                  item.image,
-                                  124,
-                                  124,
-                                  {}
-                                )}
-                                alt=""
-                                width={124}
-                                height={124}
-                                className="object-cover rounded-md"
-                              />
-                            )}
-                          </div>
-                          <div className="col-span-8 detail w-full pl-3">
-                            <div className="flex items-center justify-between gap-2 w-full">
-                              <h5 className="font-manrope font-bold text-base leading-2 text-gray-900/80">{item.productName?.original}</h5>
-                              <div onClick={(e) => e.stopPropagation()}>
-                                <button type="button"
-                                  onClick={(e) => {
-                                    removeItem(wixClient, item._id!);
-                                  }}
-                                  style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
-                                  className="rounded-full group flex items-center justify-center focus:outline-none"
-                                >
-                                  <svg width="34" height="34" viewBox="0 0 34 34" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <circle className="fill-red-50 transition-all duration-500 group-hover:fill-red-400"
-                                      cx="17" cy="17" r="17" fill="" />
-                                    <path className="stroke-red-500 transition-all duration-500 group-hover:stroke-white"
-                                      d="M14.1673 13.5997V12.5923C14.1673 11.8968 14.7311 11.333 15.4266 11.333H18.5747C19.2702 11.333 19.834 11.8968 19.834 12.5923V13.5997M19.834 13.5997C19.834 13.5997 14.6534 13.5997 11.334 13.5997C6.90804 13.5998 27.0933 13.5998 22.6673 13.5997C21.5608 13.5997 19.834 13.5997 19.834 13.5997ZM12.4673 13.5997H21.534V18.8886C21.534 20.6695 21.534 21.5599 20.9807 22.1131C20.4275 22.6664 19.5371 22.6664 17.7562 22.6664H16.2451C14.4642 22.6664 13.5738 22.6664 13.0206 22.1131C12.4673 21.5599 12.4673 20.6695 12.4673 18.8886V13.5997Z"
-                                      stroke="#EF4444" strokeWidth="1.6" strokeLinecap="round" />
-                                  </svg>
-                                </button>
-                              </div>
+                      {cart.lineItems?.map((item) => {
+                        console.log(item);
+                        return (
+                          <div key={item._id} className="rounded-lg border border-gray-200 p-3 lg:p-4 grid grid-cols-12 mb-3 max-lg:max-w-lg max-lg:mx-auto gap-y-4">
+                            <div className="col-span-4 img box">
+                              {item.image && (
+                                <Image
+                                  src={wixMedia.getScaledToFillImageUrl(
+                                    item.image,
+                                    124,
+                                    124,
+                                    {}
+                                  )}
+                                  alt=""
+                                  width={124}
+                                  height={124}
+                                  className="object-cover rounded-md"
+                                />
+                              )}
                             </div>
-                            {(item?.descriptionLines?.length ?? 0) > 0 && (
+                            <div className="col-span-8 detail w-full pl-3">
+                              <div className="flex items-center justify-between gap-2 w-full">
+                                <h5 className="font-manrope font-bold text-base leading-2 text-gray-900/80">{item.productName?.original}</h5>
+                                <div onClick={(e) => e.stopPropagation()}>
+                                  <button type="button"
+                                    onClick={(e) => {
+                                      removeItem(wixClient, item._id!);
+                                    }}
+                                    style={{ cursor: isLoading ? "not-allowed" : "pointer" }}
+                                    className="rounded-full group flex items-center justify-center focus:outline-none"
+                                  >
+                                    <svg width="34" height="34" viewBox="0 0 34 34" fill="none"
+                                      xmlns="http://www.w3.org/2000/svg">
+                                      <circle className="fill-red-50 transition-all duration-500 group-hover:fill-red-400"
+                                        cx="17" cy="17" r="17" fill="" />
+                                      <path className="stroke-red-500 transition-all duration-500 group-hover:stroke-white"
+                                        d="M14.1673 13.5997V12.5923C14.1673 11.8968 14.7311 11.333 15.4266 11.333H18.5747C19.2702 11.333 19.834 11.8968 19.834 12.5923V13.5997M19.834 13.5997C19.834 13.5997 14.6534 13.5997 11.334 13.5997C6.90804 13.5998 27.0933 13.5998 22.6673 13.5997C21.5608 13.5997 19.834 13.5997 19.834 13.5997ZM12.4673 13.5997H21.534V18.8886C21.534 20.6695 21.534 21.5599 20.9807 22.1131C20.4275 22.6664 19.5371 22.6664 17.7562 22.6664H16.2451C14.4642 22.6664 13.5738 22.6664 13.0206 22.1131C12.4673 21.5599 12.4673 20.6695 12.4673 18.8886V13.5997Z"
+                                        stroke="#EF4444" strokeWidth="1.6" strokeLinecap="round" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                              {(item?.descriptionLines?.length ?? 0) > 0 && (
+                                <div className="flex gap-2 items-center">
+                                  <h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">
+                                    <span className="font-bold">{item.descriptionLines?.[0]?.name?.original ?? ""}</span>: {item.descriptionLines?.[0]?.plainText?.original ?? ""}
+                                  </h6>
+                                  {item.descriptionLines?.[1] && (<h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">
+                                    <span className="font-bold">{item.descriptionLines?.[1]?.name?.original ?? ""}</span>: {item.descriptionLines?.[1]?.colorInfo?.original ?? ""}
+                                  </h6>)}
+                                </div>
+                              )}
                               <div className="flex justify-between items-center">
-                                <h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">
-                                  {item.descriptionLines?.[0]?.name?.original ?? ""}: {item.descriptionLines?.[0]?.plainText?.original ?? ""}
-                                </h6>
+                                <h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">Quantity: {item.quantity}</h6>
                               </div>
-                            )}
-                            <div className="flex justify-between items-center">
-                              <h6 className="text-gray-500 font-light text-sm mt-2 tracking-wider leading-2">Quantity: {item.quantity}</h6>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <h6 className="text-lama/80 font-manrope font-bold text-2xl leading-9 text-right">₹ {item.price?.amount}</h6>
+                              <div className="flex justify-between items-center">
+                                <h6 className="text-lama/80 font-manrope font-bold text-2xl leading-9 text-right">₹ {item.price?.amount}</h6>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      })}
+
                       <div className="flex flex-row items-center justify-between px-3 pb-3 md:px-6 md:pb-6 border-b border-gray-200">
                         <h5 className="text-gray-900 flex justify-center items-center font-manrope font-semibold text-3xl leading-9 max-md:text-center">Subtotal</h5>
                         <div className="flex flex-row">

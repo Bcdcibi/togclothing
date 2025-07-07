@@ -573,7 +573,7 @@ const AllProducts = ({ products, searchParams, isMobile }: { products: any, sear
                     <button
                       type="button"
                       disabled={!product.stock?.inStock || (product.stock?.quantity ?? 0) < 1 || loading === product._id}
-                      className="absolute right-2 sm:top-3 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute right-2 top-2 -translate-y-1/2 flex items-center justify-center px-4 py-2 rounded-md bg-lama hover:bg-yellow-500 text-white text-[10px] sm:text-xs uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ fontWeight: 400, minWidth: "70px", maxHeight: "40px", }}
                       onClick={(e) => handleBuyNow(product, e)}
                     >

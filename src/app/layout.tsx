@@ -11,6 +11,20 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "To G Clothing",
   description: "Your Store Description here",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  other: {
+    // Instagram in-app browser compatibility
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "default",
+    // Prevent auto-formatting of phone numbers and addresses
+    "format-detection": "telephone=no, address=no",
+  },
 };
 
 export default function RootLayout({

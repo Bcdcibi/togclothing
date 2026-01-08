@@ -1,185 +1,149 @@
 "use client"
 
-import { Instagram, Youtube, MapPin } from "lucide-react";
+import { Instagram, Youtube, MapPin, Mail, Phone, ArrowUpRight } from "lucide-react";
 import { SiThreads } from "@icons-pack/react-simple-icons";
-import Image from "next/image"; // Import the Image component
+import Image from "next/image";
 
 const Footer = async () => {
   return (
-    <>
-      <footer id="contact" className="bg-black/90 text-gray-300 py-16 mt-16">
-        <div className="container mx-auto px-4 md:px-24 sm:px-12 lg:px-32">
-          {/* 5-Column Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Contact Details */}
-            <div className="hidden sm:flex flex-col justify-center items-start">
-              <h3 className="text-white text-xl font-medium mb-6">CONTACT</h3>
-              <div className="space-y-4 flex sm:block flex-col justify-center items-center">
-                <div>
-                  <h4 className="text-white/90 sm:text-left text-center text-lg mb-2">Address</h4>
-                  <p className="text-sm font-light group relative flex items-start gap-2 text-gray-400">
-                    <MapPin className="mt-1 flex-shrink-0 text-gray-400" size={20} />
-                    To G clothing, 1st street, Lashme nagar, Pn road, Tiruppur - 641602
-                  </p>
-                  {/* Google Maps Embed (5th column) */}
-                  <div className="w-full mt-4 h-full">
-                    <div className="w-full h-24 rounded-lg overflow-hidden">
-                      <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3914.9618983022106!2d77.33718487504686!3d11.116215689053945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zM13CsDA2JzU4LjQiTiA3N8KwMjAnMjMuMSJF!5e0!3m2!1sen!2sin!4v1738498840577!5m2!1sen!2sin"
-                        className="w-full h-full"
-                        style={{ border: 0 }}
-                        allowFullScreen={true}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex sm:block flex-col justify-center items-center">
-                  <h4 className="text-white/90 text-lg mb-2">Contact Details</h4>
-                  <p className="text-base mb-2 text-gray-400 font-light">+91 - 9080560577</p>
-                  <p className="text-base mb-4 text-gray-400 font-light">thetopgclothing@gmail.com</p>
-                </div>
-              </div>
-            </div>
-            {/* For mobile */}
-            <div className="lg:col-span-1 flex sm:hidden flex-col justify-center items-center">
-              <Image
-                src="/logo.png"
-                alt="togclothing_logo"
-                width={200} // Set width
-                height={100} // Set height
-                className="object-contain mb-6"
-              />
-              <h3 className="text-xl mb-4 text-gray-400 text-center">ALWAYS BEHIND EXCELLENCE</h3>
+    <footer id="contact" className="bg-black text-white pt-20 pb-10 mt-20 relative overflow-hidden">
+      {/* Background Texture - Subtle Grid */}
+      <div className="absolute inset-0 opacity-[0.03]"
+        style={{ backgroundImage: 'linear-gradient(#333 1px, transparent 1px), linear-gradient(90deg, #333 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+      </div>
 
-              <div className="flex gap-6 mb-4">
-                <a href="https://www.instagram.com/to_g_mob?igsh=NG9hamRpam1lcm1r&utm_source=qr" className="hover:text-white transition-colors duration-300">
-                  <Instagram size={24} />
-                </a>
-                <a href="https://www.threads.net/@to_g_mob?igshid=NTc4MTIwNjQ2YQ==" className="hover:text-white transition-colors duration-300">
-                  {/* Threads icon */}
-                  <SiThreads size={24} />
-                </a>
-                <a href="https://youtube.com/@thegclothing?si=aJZOhITJEpMGXKqd" className="hover:text-white transition-colors duration-300">
-                  <Youtube size={24} />
-                </a>
-              </div>
-            </div>
+      <div className="container mx-auto px-4 md:px-12 lg:px-24 relative z-10">
 
-            {/* Information */}
-            <div className="flex flex-col justify-center sm:justify-start items-center">
-              <h3 className="text-white text-xl font-medium mb-6">INFORMATION</h3>
-              <ul className="space-y-4 font-light text-gray-400 flex sm:block flex-col justify-center items-center">
-                <li>
-                  <a href="#" className="hover:text-white transition-colors duration-300">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="/delivery_info" className="hover:text-white transition-colors duration-300">
-                    Delivery Info
-                  </a>
-                </li>
-                <li>
-                  <a href="/privacy" className="hover:text-white transition-colors duration-300">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="/terms_conditions" className="hover:text-white transition-colors duration-300">
-                    Terms & Cond.
-                  </a>
-                </li>
-                <li>
-                  <a href="/shipping_refund" className="hover:text-white transition-colors duration-300">
-                    Shipping & Refund
-                  </a>
-                </li>
-              </ul>
+        {/* 1. Header Section: Brand & Tagline */}
+        <div className="flex flex-col md:flex-row justify-between items-start mb-12 md:mb-16 border-b border-white/10 pb-8 md:pb-12">
+          <div className="flex flex-col items-start space-y-4">
+            <Image
+              src="/logo.png"
+              alt="togclothing_logo"
+              width={160}
+              height={80}
+              className="object-contain md:w-[180px]"
+            />
+            <h3 className="text-lg md:text-xl font-light tracking-[0.2em] text-gray-400 uppercase">
+              Always Behind Excellence
+            </h3>
+          </div>
+
+          {/* Socials - Moved to top right for better visibility */}
+          <div className="flex gap-4 mt-6 md:mt-0 self-start md:self-auto">
+            {[
+              { icon: <Instagram size={20} />, href: "https://www.instagram.com/to_g_mob?igsh=NG9hamRpam1lcm1r&utm_source=qr", label: "Instagram" },
+              { icon: <SiThreads size={20} />, href: "https://www.threads.net/@to_g_mob?igshid=NTc4MTIwNjQ2YQ==", label: "Threads" },
+              { icon: <Youtube size={20} />, href: "https://youtube.com/@thegclothing?si=aJZOhITJEpMGXKqd", label: "Youtube" }
+            ].map((social, idx) => (
+              <a
+                key={idx}
+                href={social.href}
+                className="bg-white/5 hover:bg-white text-white hover:text-black p-3 md:p-4 rounded-full transition-all duration-300 transform hover:-translate-y-1"
+                aria-label={social.label}
+              >
+                {social.icon}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* 2. Main Content Grid - Asymmetrical Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 lg:gap-16 mb-12 md:mb-20">
+
+          {/* Column 1: Get in Touch (Span 5) */}
+          <div className="md:col-span-5 space-y-8">
+            <h4 className="text-xs md:text-sm font-bold uppercase tracking-widest text-gray-500 mb-6 border-l-2 border-purple-500 pl-3">Get in Touch</h4>
+
+            <div className="space-y-6">
+              <a href="mailto:thetopgclothing@gmail.com" className="group block">
+                <span className="text-gray-400 text-sm mb-1 block">Email Us</span>
+                <span className="text-xl md:text-3xl font-medium text-white group-hover:text-purple-400 transition-colors break-all md:break-words">
+                  thetopgclothing@gmail.com
+                </span>
+              </a>
+
+              <a href="tel:+919080560577" className="group block">
+                <span className="text-gray-400 text-sm mb-1 block">Call Us</span>
+                <span className="text-2xl md:text-3xl font-medium text-white group-hover:text-purple-400 transition-colors">
+                  +91 - 9080560577
+                </span>
+              </a>
             </div>
 
-            {/* Logo and Description */}
-            <div className="lg:col-span-1 hidden sm:flex flex-col justify-center items-center">
-              <Image
-                src="/logo.png"
-                alt="togclothing_logo"
-                width={200} // Set width
-                height={100} // Set height
-                className="object-contain mb-6"
-              />
-              <h3 className="text-xl mb-4 text-gray-400 text-center">ALWAYS BEHIND EXCELLENCE</h3>
-
-              <div className="flex gap-6 mb-4">
-                <a href="https://www.instagram.com/to_g_mob?igsh=NG9hamRpam1lcm1r&utm_source=qr" className="hover:text-white transition-colors duration-300">
-                  <Instagram size={24} />
-                </a>
-                <a href="https://www.threads.net/@to_g_mob?igshid=NTc4MTIwNjQ2YQ==" className="hover:text-white transition-colors duration-300">
-                  {/* Threads icon */}
-                  <SiThreads size={24} />
-                </a>
-                <a href="https://youtube.com/@thegclothing?si=aJZOhITJEpMGXKqd" className="hover:text-white transition-colors duration-300">
-                  <Youtube size={24} />
-                </a>
-              </div>
-            </div>
-            {/* For mobile */}
-            <div className="flex sm:hidden flex-col justify-center items-center">
-              <h3 className="text-white text-xl font-medium mb-6">CONTACT</h3>
-              <div className="space-y-4 flex sm:block flex-col justify-center items-center">
-                <div>
-                  <h4 className="text-white/90 sm:text-left text-center text-lg mb-2">Address</h4>
-                  <p className="text-sm font-light group relative flex items-start gap-2 text-gray-400">
-                    <MapPin className="mt-1 flex-shrink-0 text-gray-400" size={20} />
-                    To G clothing, 1st street, Lashme nagar, Pn road, Tiruppur - 641602
-                  </p>
-                  {/* Google Maps Embed (5th column) */}
-                  <div className="w-full mt-4 h-full">
-                    <div className="w-full h-24 rounded-lg overflow-hidden">
-                      <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3914.9618983022106!2d77.33718487504686!3d11.116215689053945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zM13CsDA2JzU4LjQiTiA3N8KwMjAnMjMuMSJF!5e0!3m2!1sen!2sin!4v1738498840577!5m2!1sen!2sin"
-                        className="w-full h-full"
-                        style={{ border: 0 }}
-                        allowFullScreen={true}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex sm:block flex-col justify-center items-center">
-                  <h4 className="text-white/90 text-lg mb-2">Contact Details</h4>
-                  <p className="text-base mb-2 text-gray-400 font-light">+91 - 908056057</p>
-                  <p className="text-base mb-4 text-gray-400 font-light">thetopgclothing@gmail.com</p>
-                </div>
+            <div className="pt-8 border-t border-white/10">
+              <div className="flex items-start gap-4">
+                <MapPin className="text-purple-500 mt-1 shrink-0" size={24} />
+                <p className="text-base md:text-lg text-gray-300 font-light leading-relaxed">
+                  To G clothing, 1st street, Lashme nagar,<br />
+                  Pn road, Tiruppur - 641602
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </footer>
 
-      {/* Bottom Bar */}
-      <div className="bg-black/80 border-t border-gray-900/60 p-4">
-        <div className="container mx-auto px-4 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white text-base text-center md:text-left mb-4 md:mb-0">
-            © 2025 | The Togclothing. Powered by {" "}
-            <a href="#" className="text-blue-500 hover:text-blue-400">
-              Better Call Devs
-            </a>
-            .
+          {/* Column 2: Quick Links (Span 3) */}
+          <div className="md:col-span-3">
+            <h4 className="text-xs md:text-sm font-bold uppercase tracking-widest text-gray-500 mb-6 md:mb-8 border-l-2 border-blue-500 pl-3">Explore</h4>
+            <ul className="space-y-3 md:space-y-4">
+              {[
+                { name: "About Us", href: "#" },
+                { name: "Delivery Info", href: "/delivery_info" },
+                { name: "Privacy Policy", href: "/privacy" },
+                { name: "Terms & Conditions", href: "/terms_conditions" },
+                { name: "Shipping & Refund", href: "/shipping_refund" }
+              ].map((link, idx) => (
+                <li key={idx}>
+                  <a
+                    href={link.href}
+                    className="group flex items-center justify-between py-2 text-gray-400 hover:text-white border-b border-white/5 hover:border-white/20 transition-all duration-300"
+                  >
+                    <span className="font-light text-base md:text-lg">{link.name}</span>
+                    <ArrowUpRight size={16} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-blue-400" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Map Display (Span 4) */}
+          <div className="md:col-span-4 h-[250px] md:h-auto md:min-h-0 relative group rounded-2xl overflow-hidden bg-gray-900 border border-white/10">
+            <iframe
+              src="https://maps.google.com/maps?q=11.116216,77.337185&z=19&output=embed"
+              className="w-full h-full absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-100"
+              style={{ border: 0 }}
+              allowFullScreen={true}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 pointer-events-none">
+              <span className="text-white text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                Locate Us
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Footer Bottom */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center pt-8 border-t border-white/10 gap-4 md:gap-0">
+          <p className="text-gray-500 text-xs md:text-sm">
+            © 2025 | The Togclothing. Powered by <a href="#" className="text-white hover:underline decoration-purple-500 underline-offset-4">Better Call Devs</a>.
           </p>
-          <div className="flex items-center gap-4">
+
+          <div className="flex items-center gap-4 md:gap-6 self-start md:self-auto">
+            <span className="text-gray-600 text-[10px] md:text-xs uppercase tracking-widest block">Secure Payment</span>
             <Image
               src="/payments.png"
               alt="Payment Methods"
-              width={250} // Set width
-              height={100} // Set height
-              className="object-contain opacity-80 grayscale hover:grayscale-0 transition-all duration-300"
+              width={200}
+              height={32}
+              className="object-contain opacity-60 hover:opacity-100 transition-opacity w-[150px] md:w-[250px]"
             />
           </div>
         </div>
       </div>
-    </>
+    </footer>
   );
 };
 
